@@ -1,19 +1,24 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 
 def welcome_page(request):
-    pass
+    context = {}
+    return render(request, "welcome_page.html", context)
+
+
+def auth_page(request):
+    return render(request, "registrate.html")
 
 
 def login_page(request):
-    return Ellipsis
+    return render(request, "login.html")
 
 
 @login_required
 def logout_page(request):
-    return Ellipsis
+    return redirect("")
 
 
 def registration_page(request):
