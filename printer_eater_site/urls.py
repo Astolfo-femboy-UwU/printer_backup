@@ -27,4 +27,5 @@ urlpatterns = [
     path("support/", support_page),
     path("filament/", filament_page),
     path("admin/", admin.site.urls),
+    path("user_profile", profile_page)
 ]

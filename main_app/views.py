@@ -26,6 +26,12 @@ def registration_page(request):
 
 
 @login_required
+def profile_page(request):
+
+    return render(request, "user_profile.hmtl", {})
+
+
+@login_required
 def support_page(request):
     pass
 
