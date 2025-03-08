@@ -5,6 +5,11 @@
     <title>Профиль</title>
 </head>
 <body>
-
+    <div class="profile">
+        <h2>Информация о пользователе</h2>
+        <p><strong>Имя пользователя:</strong> {{ profile.user.name }}</p>
+        <p><strong>Электронная почта:</strong> {{ profile.user.email }}</p>
+        <p><strong>Дата рождения:</strong> {{ profile.birth_date }}</p>
+    </div>
 </body>
 </html>

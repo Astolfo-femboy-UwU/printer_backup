@@ -27,8 +27,10 @@ def registration_page(request):
 
 @login_required
 def profile_page(request):
-
-    return render(request, "user_profile.hmtl", {})
+    profile = request.user.profile
+    return render(request,
+                  "user_profile.hmtl",
+                  {"profile": profile})
 
 
 @login_required
