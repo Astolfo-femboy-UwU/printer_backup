@@ -1,10 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Нифига (регистрация)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
 </head>
 <body>
+    <!-- Основной контент -->
+    <div class="container">
+        <h1>Регистрация</h1>
 
+        <form method="POST" action="">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nickname">Имя пользователя:</label>
+                {{ reg_form.nickname }}
+                {% if reg_form.nickname.errors %}
+                    <div class="error-message">{{ reg_form.nickname.errors }}</div>
+                {% endif %}
+            </div>
+            <div>
+                <label for="name">Имя:</label>
+                {{ reg_form.name }}
+                {% if reg_form.name.errors %}
+                    <div class="error-message">{{ reg_form.name.errors }}</div>
+                {% endif %}
+            </div>
+            <div>
+                <label for="surname">Имя:</label>
+                {{ reg_form.surname }}
+                {% if reg_form.surname.errors %}
+                    <div class="error-message">{{ reg_form.surname.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="email">Электронная почта:</label>
+                {{ reg_form.email }}
+                {% if reg_form.email.errors %}
+                    <div class="error-message">{{ reg_form.email.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                {{ reg_form.password }}
+                {% if reg_form.password.errors %}
+                    <div class="error-message">{{ reg_form.password.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="password2">Подтверждение пароля:</label>
+                {{ reg_form.password2 }}
+                {% if reg_form.password2.errors %}
+                    <div class="error-message">{{ reg_form.password2.errors }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit">Зарегистрироваться</button>
+            {% if reg_form.non_field_errors %}
+                <div class="error-message">{{ reg_form.non_field_errors }}</div>
+            {% endif %}
+        </form>
+        <p>Уже есть аккаунт? <a href="/accounts/login">Войти</a>.</p>
+    </div>
 </body>
 </html>

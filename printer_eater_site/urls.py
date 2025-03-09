@@ -21,11 +21,13 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("", welcome_page),
-    path("accounts/registrate", auth_page),
-    path("accounts/login", auth_views.LoginView.as_view()),
+    path("accounts/registrate/", registration_page),
+    path("accounts/login/", login_page),
+    path("login/", auth_views.LoginView.as_view()),
     path("accounts/logout", logout_page),
     path("support/", support_page),
     path("filament/", filament_page),
     path("admin/", admin.site.urls),
-    path("user_profile", profile_page)
+    path("profile/", profile_page),
+    path("edit_profile/", edit_profile_page)
 ]
