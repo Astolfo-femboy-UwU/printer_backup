@@ -10,25 +10,25 @@ class RegistrationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ["name", "surname", "nickname", "email", "password"]
+        fields = ["username", "first_name", "last_name", "email", "password"]
 
     def clean_name(self):
-        name = self.cleaned_data.get("name")
+        name = self.cleaned_data.get("first_name")
         if not all(i.isalpha for i in name):
             raise forms.ValidationError("Имя должно содержать только буквы")
         return name
 
     def clean_surname(self):
-        surname = self.cleaned_data.get("name")
+        surname = self.cleaned_data.get("last_name")
         if not all(i.isalpha for i in surname):
             raise forms.ValidationError("Фамилия должна содержать только буквы")
         return surname
 
-    def clean_nickname(self):
-        nickname = self.cleaned_data.get("nickname")
-        if User.objects.filter(username=nickname).exists():
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        if User.objects.filter(username=username).exists():
             raise forms.ValidationError("Это имя пользователя уже занято")
-        return nickname
+        return username
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -44,42 +44,22 @@ class RegistrationForm(forms.ModelForm):
         return password2
 
 
-class LoginForm(forms.ModelForm):
-    name = forms.CharField(
-        max_length=100,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Имя',
-            'class': 'form-control'
-        }),
-        label="Имя пользователя"
-    )
-    surname = forms.CharField(
-        max_length=100,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Фамилия',
-            'class': 'form-control'
-        }),
-    )
-    nickname = forms.CharField(
-        max_length=150,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Никнейм',
-            'class': 'form-control'
-        }),
-        label='Никнейм'
-    )
-    email = forms.EmailField(
-        max_length=150,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Адрес электронной почты',
-            'class': 'form-control'
-        }),
-        label='Адрес электронной почты'
-    )
-    password = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Пароль',
-            'class': 'form-control'
-        }),
-        label='Пароль'
-    )
+class LoginForm(forms.Form):
+    username = forms.CharField(label='Имя пользователя', max_length=150)
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get("username")
+        password = cleaned_data.get("password")
+
+        # Здесь можно добавить дополнительную валидацию
+        if not username or not password:
+            raise forms.ValidationError("Пожалуйста, введите имя пользователя и пароль.")
+
+
+class ProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = Profile
+        fields = ['first_name', 'last_name', 'username', 'email']

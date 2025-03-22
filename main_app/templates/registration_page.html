@@ -13,22 +13,22 @@
         <form method="POST" action="">
             {% csrf_token %}
             <div class="form-group">
-                <label for="nickname">Имя пользователя:</label>
-                {{ reg_form.nickname }}
-                {% if reg_form.nickname.errors %}
-                    <div class="error-message">{{ reg_form.nickname.errors }}</div>
+                <label for="username">Имя пользователя:</label>
+                {{ reg_form.username }}
+                {% if reg_form.username.errors %}
+                    <div class="error-message">{{ reg_form.username.errors }}</div>
                 {% endif %}
             </div>
             <div>
-                <label for="name">Имя:</label>
-                {{ reg_form.name }}
+                <label for="first_name">Имя:</label>
+                {{ reg_form.first_name }}
                 {% if reg_form.name.errors %}
                     <div class="error-message">{{ reg_form.name.errors }}</div>
                 {% endif %}
             </div>
             <div>
-                <label for="surname">Имя:</label>
-                {{ reg_form.surname }}
+                <label for="last_name">Фамилия:</label>
+                {{ reg_form.last_name }}
                 {% if reg_form.surname.errors %}
                     <div class="error-message">{{ reg_form.surname.errors }}</div>
                 {% endif %}
@@ -54,7 +54,6 @@
                     <div class="error-message">{{ reg_form.password2.errors }}</div>
                 {% endif %}
             </div>
-
             <button type="submit">Зарегистрироваться</button>
             {% if reg_form.non_field_errors %}
                 <div class="error-message">{{ reg_form.non_field_errors }}</div>

@@ -6,9 +6,7 @@ class Profile(models.Model):
     class Meta:
         app_label = "main_app"
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.TextField(max_length=100, blank=True)
-    surname = models.TextField(max_length=100, blank=True)
-    nickname = models.TextField(max_length=25, blank=True)
+    first_name = models.TextField(max_length=100, blank=True)
+    last_name = models.TextField(max_length=100, blank=True)
+    username = models.TextField(max_length=25, blank=True)
     email = models.EmailField(null=True, blank=True)
-
-

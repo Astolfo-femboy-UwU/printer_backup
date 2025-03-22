@@ -23,11 +23,12 @@ urlpatterns = [
     path("", welcome_page),
     path("accounts/registrate/", registration_page),
     path("accounts/login/", login_page),
-    path("login/", auth_views.LoginView.as_view()),
-    path("accounts/logout", logout_page),
+    path("accounts/logout/", logout_page),
+    path("accounts/password_reset/", auth_views.PasswordResetView.as_view()),
+    path("profile/", profile_page),
+    path("edit_profile/", edit_profile_page),
     path("support/", support_page),
     path("filament/", filament_page),
     path("admin/", admin.site.urls),
-    path("profile/", profile_page),
-    path("edit_profile/", edit_profile_page)
+
 ]
