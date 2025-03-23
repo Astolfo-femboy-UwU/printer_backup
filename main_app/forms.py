@@ -52,8 +52,6 @@ class LoginForm(forms.Form):
         cleaned_data = super().clean()
         username = cleaned_data.get("username")
         password = cleaned_data.get("password")
-
-        # Здесь можно добавить дополнительную валидацию
         if not username or not password:
             raise forms.ValidationError("Пожалуйста, введите имя пользователя и пароль.")
 
@@ -63,3 +61,16 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['first_name', 'last_name', 'username', 'email']
+
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        app_label = "main_app"
+        fields = ['first_name', 'last_name', 'username', 'email']
+    widgets = {
+        'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+        'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+        'username': forms.TextInput(attrs={'class': 'form-control'}),
+        'email': forms.EmailInput(attrs={'class': 'form-control'}),
+    }

@@ -26,6 +26,7 @@ def registration_page(request):
             user.set_password(reg_form.cleaned_data["password"])
             user.save()
             login(request, user)
+            Profile.objects.create(user=user)
             return redirect("/")
     else:
         reg_form = RegistrationForm()
@@ -64,33 +65,37 @@ def logout_page(request):
 
 @login_required
 def profile_page(request):
-    profile = request.user.profile
+    profile = request.user
     return render(request,
-                  "user_profile.hmtl",
+                  "user_profile.html",
                   {"profile": profile})
 
 
 @login_required
 def edit_profile_page(request):
-    profile = request.user.profile
+    profile = Profile.objects.get(user=request.user)
     if request.method == "POST":
-        form = ProfileForm(request.POST, instance=profile)
+        form = ProfileEditForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            messages.success(request, "Профиль успешно обновлён.")
-            return redirect("profile_page")
+            return redirect("profile/")
     else:
-        form = ProfileForm(instance=profile)
+        form = ProfileEditForm(instance=profile)
+
     return render(request, "edit_profile.html", {"form": form})
 
 
 @login_required
 def support_page(request):
     context = {}
-    return render(request, "support_page.html", context)
+    return render(request,
+                  "support_page.html",
+                  {})
 
 
 @login_required
 def filament_page(request):
     context = {}
-    return render(request, "filament_page.html", context)
+    return render(request,
+                  "filament_page.html",
+                  context)
