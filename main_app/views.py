@@ -64,9 +64,9 @@ def logout_page(request):
 
 @login_required
 def profile_page(request):
-    profile = request.user.profile
+    profile = request.user
     return render(request,
-                  "user_profile.hmtl",
+                  "user_profile.html",
                   {"profile": profile})
 
 
