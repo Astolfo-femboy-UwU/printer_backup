@@ -94,3 +94,4 @@ def support_page(request):
 def filament_page(request):
     context = {}
     return render(request, "filament_page.html", context)
+
