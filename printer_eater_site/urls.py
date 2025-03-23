@@ -21,7 +21,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("", welcome_page),
-    path("accounts/registrate/", registration_page),
+    path("accounts/registration/", registration_page),
     path("accounts/login/", login_page),
     path("accounts/logout/", logout_page),
     path("accounts/password_reset/", auth_views.PasswordResetView.as_view()),

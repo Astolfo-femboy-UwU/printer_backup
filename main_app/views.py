@@ -32,7 +32,7 @@ def registration_page(request):
         reg_form = RegistrationForm()
 
     return render(request,
-                  "registration_page.html",
+                  "registration/registration_page.html",
                   {"reg_form": reg_form})
 
 
@@ -65,7 +65,7 @@ def logout_page(request):
 
 @login_required
 def profile_page(request):
-    profile = request.user
+    profile = request.user.profile
     return render(request,
                   "user_profile.html",
                   {"profile": profile})
@@ -78,7 +78,7 @@ def edit_profile_page(request):
         form = ProfileEditForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect("profile/")
+            return redirect("/profile")
     else:
         form = ProfileEditForm(instance=profile)
 
