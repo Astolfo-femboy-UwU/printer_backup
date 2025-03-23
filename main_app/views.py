@@ -73,16 +73,25 @@ def profile_page(request):
 
 @login_required
 def edit_profile_page(request):
-    profile = Profile.objects.get(user=request.user)
+    profile = request.user.profile
     if request.method == "POST":
         form = ProfileEditForm(request.POST, instance=profile)
         if form.is_valid():
-            form.save()
+            profile = Profile(
+                user=request.user,
+                first_name=form.cleaned_data["first_name"],
+                last_name=form.cleaned_data["last_name"],
+                username=form.cleaned_data["username"],
+                email=form.cleaned_data["email"]
+            )
+            profile.save()
             return redirect("/profile")
     else:
         form = ProfileEditForm(instance=profile)
 
-    return render(request, "edit_profile.html", {"form": form})
+    return render(request,
+                  "edit_profile.html",
+                  {"form": form})
 
 
 def printers_page(request):

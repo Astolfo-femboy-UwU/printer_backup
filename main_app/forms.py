@@ -12,17 +12,17 @@ class RegistrationForm(forms.ModelForm):
         model = User
         fields = ["username", "first_name", "last_name", "email", "password"]
 
-    def clean_name(self):
-        name = self.cleaned_data.get("first_name")
-        if not all(i.isalpha for i in name):
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get("first_name")
+        if not all(i.isalpha for i in first_name):
             raise forms.ValidationError("Имя должно содержать только буквы")
-        return name
+        return first_name
 
-    def clean_surname(self):
-        surname = self.cleaned_data.get("last_name")
-        if not all(i.isalpha for i in surname):
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get("last_name")
+        if not all(i.isalpha for i in last_name):
             raise forms.ValidationError("Фамилия должна содержать только буквы")
-        return surname
+        return last_name
 
     def clean_username(self):
         username = self.cleaned_data.get("username")
@@ -45,8 +45,8 @@ class RegistrationForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label='Имя пользователя', max_length=150)
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    username = forms.CharField(label="Имя пользователя", max_length=150)
+    password = forms.CharField(label="Пароль", widget=forms.PasswordInput)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -60,17 +60,35 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'username', 'email']
+        fields = ["first_name", "last_name", "username", "email"]
 
 
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         app_label = "main_app"
-        fields = ['first_name', 'last_name', 'username', 'email']
-    widgets = {
-        'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-        'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-        'username': forms.TextInput(attrs={'class': 'form-control'}),
-        'email': forms.EmailInput(attrs={'class': 'form-control'}),
-    }
+        fields = ["first_name", "last_name", "username", "email"]
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get("first_name")
+        if not all(i.isalpha for i in first_name):
+            raise forms.ValidationError("Имя должно содержать только буквы")
+        return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get("last_name")
+        if not all(i.isalpha for i in last_name):
+            raise forms.ValidationError("Фамилия должна содержать только буквы")
+        return last_name
+
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        # if User.objects.filter(username=username).exists():
+        #     raise forms.ValidationError("Это имя пользователя уже занято")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        # if User.objects.filter(email=email).exists():
+        #     raise forms.ValidationError("Этот адрес электронной почты уже используется")
+        return email
