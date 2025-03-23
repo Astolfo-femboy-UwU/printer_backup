@@ -27,8 +27,8 @@ urlpatterns = [
     path("accounts/password_reset/", auth_views.PasswordResetView.as_view()),
     path("profile/", profile_page),
     path("edit_profile/", edit_profile_page),
+    path("printers/", printers_page),
+    path("custom_printers/", custom_printers_page),
     path("support/", support_page),
-    path("filament/", filament_page),
     path("admin/", admin.site.urls),
-
 ]

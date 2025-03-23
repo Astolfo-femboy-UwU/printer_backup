@@ -85,6 +85,18 @@ def edit_profile_page(request):
     return render(request, "edit_profile.html", {"form": form})
 
 
+def printers_page(request):
+    return render(request,
+                  "printers_page.html",
+                  {})
+
+
+def custom_printers_page(request):
+    return render(request,
+                  "custom_printer_page.html",
+                  {})
+
+
 @login_required
 def support_page(request):
     context = {}
@@ -92,10 +104,3 @@ def support_page(request):
                   "support_page.html",
                   {})
 
-
-@login_required
-def filament_page(request):
-    context = {}
-    return render(request,
-                  "filament_page.html",
-                  context)
