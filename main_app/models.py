@@ -11,6 +11,9 @@ class Profile(models.Model):
     username = models.TextField(max_length=25, blank=True)
     email = models.EmailField(null=True, blank=True)
 
+    def __str__(self):
+        return self.username
+
 
 class Printer(models.Model):
     class Meta:

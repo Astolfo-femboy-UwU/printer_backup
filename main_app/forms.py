@@ -69,6 +69,13 @@ class ProfileEditForm(forms.ModelForm):
         app_label = "main_app"
         fields = ["first_name", "last_name", "username", "email"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.user:
+            self.fields['first_name'].initial = self.instance.user.first_name
+            self.fields['last_name'].initial = self.instance.user.last_name
+            self.fields['email'].initial = self.instance.user.email
+
     def clean_first_name(self):
         first_name = self.cleaned_data.get("first_name")
         if not all(i.isalpha for i in first_name):

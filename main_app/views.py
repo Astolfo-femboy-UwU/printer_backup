@@ -7,6 +7,7 @@ from django.contrib import messages
 from .forms import *
 from django.contrib.auth.models import User
 from .models import *
+from django.views.decorators.cache import never_cache
 
 
 def welcome_page(request):
@@ -36,6 +37,7 @@ def registration_page(request):
                   {"reg_form": reg_form})
 
 
+@never_cache
 def login_page(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -77,18 +79,19 @@ def edit_profile_page(request):
     if request.method == "POST":
         form = ProfileEditForm(request.POST, instance=profile)
         if form.is_valid():
-            profile = Profile(
-                user=request.user,
-                first_name=form.cleaned_data["first_name"],
-                last_name=form.cleaned_data["last_name"],
-                username=form.cleaned_data["username"],
-                email=form.cleaned_data["email"]
-            )
+            profile = form.save(commit=False)
+            user = request.user
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            user.save()
             profile.save()
-            return redirect("/profile")
+            messages.success(request, "Профиль успешно обновлён")
+            return redirect("/profile/")
+        else:
+            messages.error(request, "Ошибки в форме")
     else:
         form = ProfileEditForm(instance=profile)
-
     return render(request,
                   "edit_profile.html",
                   {"form": form})
