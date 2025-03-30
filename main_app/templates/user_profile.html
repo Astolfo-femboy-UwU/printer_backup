@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль</title>
     <style>
+        /* Основные стили для анимации */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Темная тема */
         body {
             background-color: #121212;
             color: #ffffff;
@@ -15,7 +28,9 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            animation: fadeIn 0.8s ease-out; /* Анимация для плавного появления страницы */
         }
+
         .profile {
             background-color: #1e1e1e;
             padding: 20px;
@@ -23,32 +38,104 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             width: 100%;
             max-width: 400px;
+            text-align: center;
         }
+
         h2 {
             text-align: center;
             margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards; /* Анимация для заголовка */
+            animation-delay: 0.2s; /* Задержка для заголовка */
         }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #333;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #1e90ff;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards; /* Анимация для аватара */
+            animation-delay: 0.4s; /* Задержка для аватара */
+        }
+
         p {
             margin: 10px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards; /* Анимация для текста */
         }
+
+        /* Задержки для каждого элемента текста */
+        p:nth-child(1) { animation-delay: 0.6s; }
+        p:nth-child(2) { animation-delay: 0.8s; }
+        p:nth-child(3) { animation-delay: 1.0s; }
+
         strong {
             color: #1e90ff;
         }
+
         a {
             color: #1e90ff;
             text-decoration: none;
         }
+
         a:hover {
             text-decoration: underline;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .buttons a {
+            padding: 10px 20px;
+            background-color: #444;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards; /* Анимация для кнопок */
+            animation-delay: 1.2s; /* Задержка для кнопок */
+        }
+
+        .buttons a:hover {
+            background-color: #555;
         }
     </style>
 </head>
 <body>
     <div class="profile">
         <h2>Информация о пользователе</h2>
+
+        <!-- Аватар пользователя -->
+        <div class="avatar">
+            {{ profile.user.name|first|upper }} <!-- Первая буква имени -->
+        </div>
+
+        <!-- Информация о пользователе -->
         <p><strong>Имя пользователя:</strong> {{ profile.user.name }}</p>
         <p><strong>Электронная почта:</strong> {{ profile.user.email }}</p>
         <p><strong>Дата рождения:</strong> {{ profile.birth_date }}</p>
+
+        <!-- Кнопки для действий -->
+        <div class="buttons">
+            <a href="/accounts/edit_profile/">Редактировать профиль</a>
+            <a href="/accounts/change_password/">Изменить пароль</a>
+        </div>
     </div>
 </body>
 </html>

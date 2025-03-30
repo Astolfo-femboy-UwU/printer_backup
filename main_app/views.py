@@ -51,7 +51,7 @@ def login_page(request):
         form = LoginForm()
 
     return render(request,
-                  "registration/login.html",
+                  "login.html",
                   {"form": form})
 
 

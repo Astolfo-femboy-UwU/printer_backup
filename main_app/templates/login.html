@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход</title>
     <style>
+        /* Основные стили для анимации */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Темная тема */
         body {
             background-color: #121212;
             color: #ffffff;
@@ -15,7 +28,9 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            animation: fadeIn 0.8s ease-out; /* Анимация для плавного появления страницы */
         }
+
         .container {
             background-color: #1e1e1e;
             padding: 20px;
@@ -24,17 +39,33 @@
             width: 100%;
             max-width: 400px;
         }
+
         h1 {
             text-align: center;
             margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards; /* Анимация для заголовка */
+            animation-delay: 0.2s; /* Задержка для заголовка */
         }
+
         .form-group {
             margin-bottom: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards; /* Анимация для элементов формы */
         }
+
+        /* Задержки для каждого элемента формы */
+        .form-group:nth-child(1) { animation-delay: 0.4s; }
+        .form-group:nth-child(2) { animation-delay: 0.6s; }
+
         label {
             display: block;
             margin-bottom: 5px;
+            color: #bbbbbb;
         }
+
         input[type="text"], input[type="password"] {
             width: 100%;
             padding: 10px;
@@ -44,10 +75,12 @@
             color: #ffffff;
             font-size: 16px;
         }
+
         input[type="text"]:focus, input[type="password"]:focus {
             border-color: #555;
             outline: none;
         }
+
         button {
             width: 100%;
             padding: 10px;
@@ -57,24 +90,38 @@
             color: #ffffff;
             font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards; /* Анимация для кнопки */
+            animation-delay: 0.8s; /* Задержка для кнопки */
         }
+
         button:hover {
             background-color: #555;
         }
+
         .error-message, .error {
             color: #ff6b6b;
             font-size: 14px;
             margin-top: 5px;
         }
+
         a {
             color: #1e90ff;
             text-decoration: none;
         }
+
         a:hover {
             text-decoration: underline;
         }
+
         p {
             margin: 10px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards; /* Анимация для текста */
+            animation-delay: 1s; /* Задержка для текста */
         }
     </style>
 </head>
