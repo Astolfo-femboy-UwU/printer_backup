@@ -4,13 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
+    <style>
+        /* Основные стили для анимации */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Темная тема */
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #bbbbbb;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background-color: #333;
+            color: #ffffff;
+        }
+
+        .form-group input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 20px;
+            color: #bbbbbb;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Задержки для каждого элемента формы */
+        .form-group:nth-child(1) { animation-delay: 0.2s; }
+        .form-group:nth-child(2) { animation-delay: 0.4s; }
+        .form-group:nth-child(3) { animation-delay: 0.6s; }
+        .form-group:nth-child(4) { animation-delay: 0.8s; }
+        .form-group:nth-child(5) { animation-delay: 1.0s; }
+        .form-group:nth-child(6) { animation-delay: 1.2s; }
+    </style>
 </head>
 <body>
+    <!-- Основной контент -->
     <div class="container">
         <h1>Регистрация</h1>
 
         <form method="POST" action="">
             {% csrf_token %}
+
             <div class="form-group">
                 <label for="username">Имя пользователя:</label>
                 {{ reg_form.username }}
@@ -18,20 +129,23 @@
                     <div class="error-message">{{ reg_form.username.errors }}</div>
                 {% endif %}
             </div>
-            <div>
+
+            <div class="form-group">
                 <label for="first_name">Имя:</label>
                 {{ reg_form.first_name }}
                 {% if reg_form.name.errors %}
                     <div class="error-message">{{ reg_form.name.errors }}</div>
                 {% endif %}
             </div>
-            <div>
+
+            <div class="form-group">
                 <label for="last_name">Фамилия:</label>
                 {{ reg_form.last_name }}
                 {% if reg_form.surname.errors %}
                     <div class="error-message">{{ reg_form.surname.errors }}</div>
                 {% endif %}
             </div>
+
             <div class="form-group">
                 <label for="email">Электронная почта:</label>
                 {{ reg_form.email }}
@@ -39,6 +153,7 @@
                     <div class="error-message">{{ reg_form.email.errors }}</div>
                 {% endif %}
             </div>
+
             <div class="form-group">
                 <label for="password">Пароль:</label>
                 {{ reg_form.password }}
@@ -46,6 +161,7 @@
                     <div class="error-message">{{ reg_form.password.errors }}</div>
                 {% endif %}
             </div>
+
             <div class="form-group">
                 <label for="password2">Подтверждение пароля:</label>
                 {{ reg_form.password2 }}
@@ -53,11 +169,14 @@
                     <div class="error-message">{{ reg_form.password2.errors }}</div>
                 {% endif %}
             </div>
+
             <button type="submit">Зарегистрироваться</button>
+
             {% if reg_form.non_field_errors %}
                 <div class="error-message">{{ reg_form.non_field_errors }}</div>
             {% endif %}
         </form>
+
         <p>Уже есть аккаунт? <a href="/accounts/login">Войти</a>.</p>
     </div>
 </body>
