@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменить профиль</title>
+</head>
+<body>
+    <div class="profile">
+        <h2>Изменить профиль</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Сохранить</button>
+        </form>
+    </div>
+<p><a href="/profile/">Просмотр профиля</a></p>
+<p><a href="/">На главную страницу</a></p>
+</body>
+</html>

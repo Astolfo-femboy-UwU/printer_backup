@@ -10,3 +10,16 @@ class Profile(models.Model):
     last_name = models.TextField(max_length=100, blank=True)
     username = models.TextField(max_length=25, blank=True)
     email = models.EmailField(null=True, blank=True)
+
+    def __str__(self):
+        return self.username
+
+
+class Printer(models.Model):
+    class Meta:
+        app_label = "main_app"
+
+
+class CustomPrinter(models.Model):
+    class Meta:
+        app_label = "main_app"

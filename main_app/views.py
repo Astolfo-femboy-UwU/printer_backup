@@ -7,6 +7,7 @@ from django.contrib import messages
 from .forms import *
 from django.contrib.auth.models import User
 from .models import *
+from django.views.decorators.cache import never_cache
 
 
 def welcome_page(request):
@@ -26,15 +27,17 @@ def registration_page(request):
             user.set_password(reg_form.cleaned_data["password"])
             user.save()
             login(request, user)
+            Profile.objects.create(user=user)
             return redirect("/")
     else:
         reg_form = RegistrationForm()
 
     return render(request,
-                  "registration_page.html",
+                  "registration/registration_page.html",
                   {"reg_form": reg_form})
 
 
+@never_cache
 def login_page(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -51,7 +54,7 @@ def login_page(request):
         form = LoginForm()
 
     return render(request,
-                  "login.html",
+                  "registration/login.html",
                   {"form": form})
 
 
@@ -64,7 +67,7 @@ def logout_page(request):
 
 @login_required
 def profile_page(request):
-    profile = request.user
+    profile = request.user.profile
     return render(request,
                   "user_profile.html",
                   {"profile": profile})
@@ -74,24 +77,42 @@ def profile_page(request):
 def edit_profile_page(request):
     profile = request.user.profile
     if request.method == "POST":
-        form = ProfileForm(request.POST, instance=profile)
+        form = ProfileEditForm(request.POST, instance=profile)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Профиль успешно обновлён.")
-            return redirect("profile_page")
+            profile = form.save(commit=False)
+            user = request.user
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            user.save()
+            profile.save()
+            messages.success(request, "Профиль успешно обновлён")
+            return redirect("/profile/")
+        else:
+            messages.error(request, "Ошибки в форме")
     else:
-        form = ProfileForm(instance=profile)
-    return render(request, "edit_profile.html", {"form": form})
+        form = ProfileEditForm(instance=profile)
+    return render(request,
+                  "edit_profile.html",
+                  {"form": form})
+
+
+def printers_page(request):
+    return render(request,
+                  "printers_page.html",
+                  {})
+
+
+def custom_printers_page(request):
+    return render(request,
+                  "custom_printer_page.html",
+                  {})
 
 
 @login_required
 def support_page(request):
     context = {}
-    return render(request, "support_page.html", context)
-
-
-@login_required
-def filament_page(request):
-    context = {}
-    return render(request, "filament_page.html", context)
+    return render(request,
+                  "support_page.html",
+                  {})
 
