@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import CharField, EmailField
 from django.contrib.auth.models import User
+from django.utils import timezone
 from .models import Profile
 
 
@@ -67,14 +68,18 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         app_label = "main_app"
-        fields = ["first_name", "last_name", "username", "email"]
+        fields = [
+            "first_name", "last_name", "email",
+            "card_number", "expiry_month", "expiry_year",
+            "card_holder_name", "billing_address", "card_type"
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.user:
-            self.fields['first_name'].initial = self.instance.user.first_name
-            self.fields['last_name'].initial = self.instance.user.last_name
-            self.fields['email'].initial = self.instance.user.email
+            self.fields["first_name"].initial = self.instance.user.first_name
+            self.fields["last_name"].initial = self.instance.user.last_name
+            self.fields["email"].initial = self.instance.user.email
 
     def clean_first_name(self):
         first_name = self.cleaned_data.get("first_name")
@@ -99,3 +104,16 @@ class ProfileEditForm(forms.ModelForm):
         # if User.objects.filter(email=email).exists():
         #     raise forms.ValidationError("Этот адрес электронной почты уже используется")
         return email
+
+    expiry_month = forms.TypedChoiceField(
+        choices=[(i, f"{i:02d}") for i in range(1, 13)],  # Формат "01", "02", ...
+        coerce=int,
+        required=False,
+        empty_value=None
+    )
+    expiry_year = forms.TypedChoiceField(
+        choices=[(i, i) for i in range(timezone.now().year, timezone.now().year + 15)],
+        coerce=int,
+        required=False,
+        empty_value=None
+    )
