@@ -123,18 +123,19 @@
 
         <!-- Аватар пользователя -->
         <div class="avatar">
-            {{ profile.user.name|first|upper }} <!-- Первая буква имени -->
+            {{ profile.user.first_name|first|upper }} <!-- Первая буква имени -->
         </div>
 
         <!-- Информация о пользователе -->
-        <p><strong>Имя пользователя:</strong> {{ profile.user.name }}</p>
+        <p><strong>Имя пользователя:</strong> {{ profile.user.first_name }}</p>
         <p><strong>Электронная почта:</strong> {{ profile.user.email }}</p>
-        <p><strong>Дата рождения:</strong> {{ profile.birth_date }}</p>
+<!--        <p><strong>Дата рождения:</strong> {{ profile.birth_date }}</p>-->
 
         <!-- Кнопки для действий -->
         <div class="buttons">
-            <a href="/accounts/edit_profile/">Редактировать профиль</a>
-            <a href="/accounts/change_password/">Изменить пароль</a>
+            <a href="/edit_profile/">Редактировать профиль</a>
+            <a href="/accounts/password_reset/">Изменить пароль</a>
+            <a href="/accounts/logout/">Выйти</a>
         </div>
     </div>
 </body>
