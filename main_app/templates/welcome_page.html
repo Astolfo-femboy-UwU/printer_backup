@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -16,10 +17,16 @@
             }
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        @keyframes borderPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 168, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 168, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 168, 255, 0); }
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px rgba(0, 168, 255, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(0, 168, 255, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(0, 168, 255, 0.5); }
         }
 
         /* Темная тема */
@@ -34,8 +41,8 @@
 
         header {
             background-color: #1a1a1a;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            padding: 15px 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.7);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -51,40 +58,135 @@
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
             color: #00a8ff;
-            animation: fadeIn 1s ease-out;
+            animation: fadeIn 1s ease-out, glow 3s infinite;
+            position: relative;
+            display: flex;
+            align-items: center;
         }
 
-        nav ul {
+        .logo i {
+            margin-right: 10px;
+            font-size: 22px;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00a8ff;
+            transition: width 0.3s ease;
+        }
+
+        .logo:hover::after {
+            width: 100%;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .main-nav {
             display: flex;
             list-style: none;
+            margin: 0;
+            padding: 0;
         }
 
-        nav ul li {
+        .auth-nav {
+            display: flex;
+            list-style: none;
+            margin: 0 0 0 30px;
+            padding: 0;
+        }
+
+        .main-nav li {
             margin-left: 30px;
+            position: relative;
+        }
+
+        .auth-nav li {
+            margin-left: 15px;
         }
 
         nav ul li a {
             color: #bbbbbb;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: all 0.3s ease;
             font-weight: 500;
+            display: block;
+            position: relative;
+            padding: 8px 0;
         }
 
-        nav ul li a:hover {
+        .main-nav li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00a8ff;
+            transition: width 0.3s ease;
+        }
+
+        .main-nav li a:hover::after {
+            width: 100%;
+        }
+
+        .auth-nav li a {
+            padding: 8px 20px;
+            border-radius: 25px;
+            border: 2px solid #00a8ff;
+            animation: borderPulse 3s infinite;
+            transition: all 0.3s ease;
+        }
+
+        .auth-nav li a:hover {
+            background: #00a8ff;
+            color: #fff !important;
+            animation: none;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 168, 255, 0.4);
+        }
+
+        .auth-nav li:first-child a {
+            background: transparent;
             color: #00a8ff;
+        }
+
+        .auth-nav li:last-child a {
+            background: #00a8ff;
+            color: #fff;
+            animation: none;
         }
 
         .hero {
             background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1581093450021-4a7360e9a7e6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
             background-position: center;
-            height: 500px;
+            height: 600px;
             display: flex;
             align-items: center;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
         }
 
         .hero-content {
@@ -92,12 +194,15 @@
             margin: 0 auto;
             padding: 20px;
             animation: fadeIn 1.5s ease-out;
+            position: relative;
+            z-index: 1;
         }
 
         .hero h1 {
             font-size: 48px;
             margin-bottom: 20px;
             color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .hero p {
@@ -117,12 +222,43 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
         }
 
         .btn:hover {
             background-color: #0088cc;
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
         }
 
         .container {
@@ -163,11 +299,13 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 0.5s ease-out forwards;
+            border: 1px solid #2a2a2a;
         }
 
         .product-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: #00a8ff;
         }
 
         .product-image {
@@ -177,6 +315,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            position: relative;
         }
 
         .product-image img {
@@ -229,18 +368,30 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 0.5s ease-out forwards;
+            border: 1px solid #2a2a2a;
+        }
+
+        .upgrade-item:hover {
+            border-color: #00a8ff;
         }
 
         .upgrade-image {
             flex: 0 0 300px;
             height: 200px;
             background-color: #333;
+            position: relative;
+            overflow: hidden;
         }
 
         .upgrade-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .upgrade-item:hover .upgrade-image img {
+            transform: scale(1.1);
         }
 
         .upgrade-content {
@@ -276,10 +427,12 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 0.5s ease-out forwards;
+            border: 1px solid #2a2a2a;
         }
 
         .feature-card:hover {
             transform: translateY(-10px);
+            border-color: #00a8ff;
         }
 
         .feature-icon {
@@ -303,6 +456,7 @@
             background-color: #1a1a1a;
             padding: 50px 0 20px;
             text-align: center;
+            border-top: 1px solid #2a2a2a;
         }
 
         .footer-content {
@@ -319,6 +473,18 @@
             color: #ffffff;
             margin-bottom: 20px;
             font-size: 18px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50%;
+            height: 2px;
+            background: #00a8ff;
         }
 
         .footer-column ul {
@@ -334,9 +500,29 @@
             color: #bbbbbb;
             text-decoration: none;
             transition: color 0.3s;
+            display: inline-block;
+            position: relative;
         }
 
-        .footer-column ul li a:hover {
+        .footer-column ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #00a8ff;
+            transition: width 0.3s;
+        }
+
+        .footer-column ul li a:hover::after {
+            width: 100%;
+        }
+
+        .footer-column ul li i {
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
             color: #00a8ff;
         }
 
@@ -344,6 +530,8 @@
             margin-top: 50px;
             color: #777777;
             font-size: 14px;
+            padding-top: 20px;
+            border-top: 1px solid #2a2a2a;
         }
 
         /* Анимационные задержки */
@@ -362,17 +550,25 @@
         .feature-card:nth-child(4) { animation-delay: 0.8s; }
 
         /* Адаптивность */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .nav-container {
                 flex-direction: column;
             }
 
-            nav ul {
-                margin-top: 20px;
+            nav {
+                width: 100%;
+                margin-top: 15px;
+                flex-direction: column;
             }
 
-            nav ul li {
-                margin: 0 10px;
+            .main-nav, .auth-nav {
+                width: 100%;
+                justify-content: center;
+                margin: 10px 0;
+            }
+
+            .auth-nav {
+                margin-top: 20px;
             }
 
             .hero h1 {
@@ -382,7 +578,9 @@
             .hero p {
                 font-size: 18px;
             }
+        }
 
+        @media (max-width: 768px) {
             .upgrade-item {
                 flex-direction: column;
             }
@@ -391,6 +589,43 @@
                 flex: 0 0 100%;
                 width: 100%;
             }
+
+            .hero {
+                height: 500px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-nav, .auth-nav {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .main-nav li, .auth-nav li {
+                margin: 5px 0;
+            }
+
+            .auth-nav li a {
+                display: block;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -398,13 +633,19 @@
 <body>
     <header>
         <div class="nav-container">
-            <div class="logo">3DPrintPro</div>
+            <div class="logo">
+                <i class="fas fa-print"></i>3DPrintPro
+            </div>
             <nav>
-                <ul>
+                <ul class="main-nav">
                     <li><a href="#products">Принтеры</a></li>
                     <li><a href="#upgrades">Апгрейды</a></li>
                     <li><a href="#features">Преимущества</a></li>
                     <li><a href="#contact">Контакты</a></li>
+                </ul>
+                <ul class="auth-nav">
+                    <li><a href="/accounts/login/">Войти</a></li>
+                    <li><a href="/accounts/registration/">Регистрация</a></li>
                 </ul>
             </nav>
         </div>
@@ -561,9 +802,9 @@
             <div class="footer-column">
                 <h3>Контакты</h3>
                 <ul>
-                    <li><i class="fas fa-phone"></i> +7 (495) 123-45-67</li>
-                    <li><i class="fas fa-envelope"></i> info@3dprintpro.ru</li>
-                    <li><i class="fas fa-map-marker-alt"></i> Москва, ул. Техническая, 15</li>
+                    <li><a href="tel:+74951234567"><i class="fas fa-phone"></i> +7 (495) 123-45-67</a></li>
+                    <li><a href="mailto:info@3dprintpro.ru"><i class="fas fa-envelope"></i> info@3dprintpro.ru</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Москва, ул. Техническая, 15</a></li>
                 </ul>
             </div>
 
@@ -581,7 +822,7 @@
                 <h3>Мы в соцсетях</h3>
                 <ul>
                     <li><a href="#"><i class="fab fa-vk"></i> ВКонтакте</a></li>
-                    <li><a href="#"><i class="fab fa-telegram"></i> Telegram</a></li>
+                    <li><a href="https://t.me/printeroed"><i class="fab fa-telegram"></i> Telegram</a></li>
                     <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
                     <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
                 </ul>
