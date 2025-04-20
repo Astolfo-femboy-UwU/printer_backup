@@ -20,15 +20,15 @@ from main_app.views import *
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path("", welcome_page),
-    path("accounts/registration/", registration_page),
-    path("accounts/login/", login_page),
-    path("accounts/logout/", logout_page),
+    path("", welcome_page, name="welcome_page"),
+    path("accounts/registration/", registration_page, name="registration_page"),
+    path("accounts/login/", login_page, name="login_page"),
+    path("accounts/logout/", logout_page, name="logout_page"),
     path("accounts/password_reset/", auth_views.PasswordResetView.as_view()),
-    path("profile/", profile_page),
-    path("edit_profile/", edit_profile_page),
-    path("printers/", printers_page),
-    path("custom_printers/", custom_printers_page),
-    path("support/", support_page),
+    path("profile/", profile_page, name="profile_page"),
+    path("edit_profile/", edit_profile_page, name="edit_profile_page"),
+    path("printers/", printers_page, name="printers_page"),
+    path("custom_printers/", custom_printers_page, name="custom_printers_page"),
+    path("support/", support_page, name="support_page"),
     path("admin/", admin.site.urls),
 ]

@@ -49,10 +49,11 @@ def login_page(request):
                 login(request, user)
                 return redirect("/")
             else:
-                messages.error(request, "Неверное имя пользователя или пароль.")
+                form.add_error(None, "Неверное имя пользователя или пароль.")
+        else:
+            Ellipsis
     else:
         form = LoginForm()
-
     return render(request,
                   "registration/login.html",
                   {"form": form})
