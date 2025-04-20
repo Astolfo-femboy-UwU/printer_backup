@@ -1,11 +1,11 @@
 from django import forms
-from django.forms import CharField, EmailField
 from django.contrib.auth.models import User
 from django.utils import timezone
 from .models import Profile
 
 
 class RegistrationForm(forms.ModelForm):
+    """Form for registration"""
     password = forms.CharField(label="Пароль", widget=forms.PasswordInput)
     password2 = forms.CharField(label="Подтверждение пароля", widget=forms.PasswordInput)
 
@@ -46,6 +46,7 @@ class RegistrationForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
+    """Form for logging in"""
     username = forms.CharField(label="Имя пользователя", max_length=150)
     password = forms.CharField(label="Пароль", widget=forms.PasswordInput)
 
@@ -65,6 +66,7 @@ class ProfileForm(forms.ModelForm):
 
 
 class ProfileEditForm(forms.ModelForm):
+    """Form for profile editing"""
     class Meta:
         model = Profile
         app_label = "main_app"
