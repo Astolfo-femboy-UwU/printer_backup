@@ -1,20 +1,21 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import *
 from django.contrib.auth.models import User
-from .models import *
-from django.views.decorators.cache import never_cache
+
+from .forms import RegistrationForm, LoginForm, ProfileEditForm
+from .models import Profile
 
 
 def welcome_page(request):
+    """View function for the main (welcome) page"""
     return render(request, "welcome_page.html", {})
 
 
 def registration_page(request):
+    """View function for registration"""
     if request.method == "POST":
         reg_form = RegistrationForm(request.POST)
         if reg_form.is_valid():
@@ -37,8 +38,8 @@ def registration_page(request):
                   {"reg_form": reg_form})
 
 
-@never_cache
 def login_page(request):
+    """View function for logging in"""
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -48,10 +49,7 @@ def login_page(request):
             if user is not None:
                 login(request, user)
                 return redirect("/")
-            else:
-                form.add_error(None, "Неверное имя пользователя или пароль.")
-        else:
-            Ellipsis
+            form.add_error(None, "Неверное имя пользователя или пароль.")
     else:
         form = LoginForm()
     return render(request,
@@ -61,6 +59,7 @@ def login_page(request):
 
 @login_required
 def logout_page(request):
+    """View function for logging out"""
     logout(request)
     messages.success(request, "Вы успешно вышли из аккаунта")
     return redirect("/")
@@ -68,6 +67,7 @@ def logout_page(request):
 
 @login_required
 def profile_page(request):
+    """View function for profile page"""
     profile = request.user.profile
     return render(request,
                   "user_profile.html",
@@ -76,6 +76,7 @@ def profile_page(request):
 
 @login_required
 def edit_profile_page(request):
+    """View function for editing profile page"""
     profile = request.user.profile
     if request.method == "POST":
         form = ProfileEditForm(request.POST, instance=profile)
@@ -89,8 +90,7 @@ def edit_profile_page(request):
             profile.save()
             messages.success(request, "Профиль успешно обновлён")
             return redirect("/profile/")
-        else:
-            messages.error(request, "Ошибки в форме")
+        messages.error(request, "Ошибки в форме")
     else:
         form = ProfileEditForm(instance=profile)
     return render(request,
@@ -99,12 +99,14 @@ def edit_profile_page(request):
 
 
 def printers_page(request):
+    """View function for printers page"""
     return render(request,
                   "printers_page.html",
                   {})
 
 
 def custom_printers_page(request):
+    """View function for custom printers page"""
     return render(request,
                   "custom_printer_page.html",
                   {})
@@ -112,8 +114,8 @@ def custom_printers_page(request):
 
 @login_required
 def support_page(request):
+    """View function for support page"""
     context = {}
     return render(request,
                   "support_page.html",
-                  {})
-
+                  context)
