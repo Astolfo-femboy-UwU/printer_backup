@@ -1,0 +1,58 @@
+{% extends 'welcome_page.html' %}
+
+{% block content %}
+<div class="printer-detail" style="border: 2px solid red; padding: 20px;">
+    <!-- Детали принтера -->
+    <h1 style="color: black;">{{ printer.manufacturer }} {{ printer.article }}</h1>
+    <p style="color: black;">Цена: {{ printer.price }} ₽</p>
+
+    <div class="printer-content">
+        <div class="printer-image">
+            {% if printer.image %}
+                <img src="{{ printer.image.url }}" alt="{{ printer.manufacturer }} {{ printer.article }}">
+            {% else %}
+                <img src="https://via.placeholder.com/600x400?text=No+Image" alt="No image">
+            {% endif %}
+        </div>
+
+        <div class="printer-specs">
+            <h3>Характеристики:</h3>
+            <ul>
+                <li><strong>Производитель:</strong> {{ printer.manufacturer }}</li>
+                <li class="article"><strong>Артикул:</strong> {{ printer.article }}</li>
+                <li><strong>Габариты:</strong> {{ printer.dimensions }}</li>
+                <li><strong>Цена:</strong> {{ printer.price }} ₽</li>
+            </ul>
+
+            <h3>Описание:</h3>
+            <p>{{ printer.description|default:"Описание отсутствует" }}</p>
+
+            <a href="#" class="btn">Добавить в корзину</a>
+        </div>
+    </div>
+
+    <!-- Секция "Другие принтеры" -->
+    <h2 class="section-title">Другие принтеры</h2>
+    <div class="products">
+        {% for other_printer in printers %}
+        <div class="product-card">
+            <div class="product-image">
+                {% if other_printer.image %}
+                    <img src="{{ other_printer.image.url }}" alt="{{ other_printer.manufacturer }} {{ other_printer.article }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/300x200?text=No+Image" alt="No image">
+                {% endif %}
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">{{ other_printer.manufacturer }}</h3>
+                <p class="product-article">{{ other_printer.article }}</p>
+                <div class="product-price">{{ other_printer.price }} ₽</div>
+                <a href="{% url 'printer_detail' other_printer.id %}" class="btn">Подробнее</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>Другие принтеры отсутствуют</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,17 +1,19 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 
 from .forms import RegistrationForm, LoginForm, ProfileEditForm
-from .models import Profile
+from .models import Profile, Printer
 
 
 def welcome_page(request):
     """View function for the main (welcome) page"""
-    return render(request, "welcome_page.html", {})
+    printers = Printer.objects.all().order_by("price")
+    context = {"printers": printers}
+    return render(request, "welcome_page.html", context)
 
 
 def registration_page(request):
@@ -98,11 +100,14 @@ def edit_profile_page(request):
                   {"form": form})
 
 
-def printers_page(request):
-    """View function for printers page"""
-    return render(request,
-                  "printers_page.html",
-                  {})
+def printer_detail(request, pk):
+    printer = get_object_or_404(Printer, pk=pk)
+    print(f"Found printer: {printer}")
+    context = {
+        'printer': printer,
+        'printers': Printer.objects.exclude(pk=pk)[:4]
+    }
+    return render(request, 'printer_detail.html', context)
 
 
 def custom_printers_page(request):
@@ -119,3 +124,8 @@ def support_page(request):
     return render(request,
                   "support_page.html",
                   context)
+
+
+def test_view(request, pk):
+    printer = get_object_or_404(Printer, pk=pk)
+    return render(request, 'test.html', {'printer': printer})

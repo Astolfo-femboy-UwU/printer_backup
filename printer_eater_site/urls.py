@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from main_app.views import *
 from django.contrib.auth import views as auth_views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path("", welcome_page, name="welcome_page"),
@@ -27,8 +29,8 @@ urlpatterns = [
     path("accounts/password_reset/", auth_views.PasswordResetView.as_view()),
     path("profile/", profile_page, name="profile_page"),
     path("edit_profile/", edit_profile_page, name="edit_profile_page"),
-    path("printers/", printers_page, name="printers_page"),
     path("custom_printers/", custom_printers_page, name="custom_printers_page"),
     path("support/", support_page, name="support_page"),
     path("admin/", admin.site.urls),
-]
+    path("printer/<int:pk>/", printer_detail, name="printer_detail")
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

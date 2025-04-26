@@ -6,15 +6,13 @@ class Profile(models.Model):
     class Meta:
         app_label = "main_app"
 
-    # Выбор типа карты
     CARD_TYPE_CHOICES = [
-        ('visa', 'Visa'),
-        ('mastercard', 'MasterCard'),
-        ('amex', 'American Express'),
-        ('discover', 'Discover'),
+        ("visa", "Visa"),
+        ("mastercard", "MasterCard"),
+        ("amex", "American Express"),
+        ("discover", "Discover"),
     ]
 
-    # Существующие поля
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.TextField(max_length=100, blank=True)
     last_name = models.TextField(max_length=100, blank=True)
@@ -37,6 +35,15 @@ class Profile(models.Model):
 class Printer(models.Model):
     class Meta:
         app_label = "main_app"
+
+    description = models.TextField(verbose_name="Описание", blank=True, null=True)
+    article = models.CharField(verbose_name="Артикул", blank=True, max_length=100, unique=True)
+    price = models.DecimalField(verbose_name="Цена", blank=True, default=0, max_digits=10, decimal_places=2)
+    dimensions = models.CharField(verbose_name="Габариты", blank=True, max_length=50, help_text="Формат: ШхГхВ (мм)")
+    manufacturer = models.CharField(verbose_name="Производитель", blank=True, max_length=100)
+
+    def __str__(self):
+        return f"{self.manufacturer} {self.article}"
 
 
 class CustomPrinter(models.Model):

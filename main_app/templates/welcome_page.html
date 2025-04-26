@@ -329,6 +329,12 @@
             transform: scale(1.1);
         }
 
+        .product-article {
+            color: #777777;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
         .product-info {
             padding: 20px;
         }
@@ -342,7 +348,7 @@
         .product-description {
             color: #bbbbbb;
             margin-bottom: 15px;
-            font-size: 14px;
+            font-size: 17px;
         }
 
         .product-price {
@@ -351,6 +357,7 @@
             color: #00a8ff;
             margin-bottom: 15px;
         }
+
 
         .upgrades {
             background-color: #1a1a1a;
@@ -662,53 +669,24 @@
     <section id="products" class="container">
         <h2 class="section-title">Наши принтеры</h2>
         <div class="products">
+            {% for printer in printers %}
             <div class="product-card">
                 <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1611159063981-b8c8c4301869?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="3D Printer Basic">
+                    {% if printer.image %}
+                        <img src="{{ printer.image.url }}" alt="{{ printer.manufacturer }} {{ printer.article }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x200?text=No+Image" alt="No image">
+                    {% endif %}
                 </div>
                 <div class="product-info">
-                    <h3 class="product-title">3DPrintPro Basic</h3>
-                    <p class="product-description">Идеальный выбор для начинающих с высокой точностью печати</p>
-                    <div class="product-price">24 990 ₽</div>
-                    <a href="#" class="btn">Подробнее</a>
+                    <h3 class="product-title">{{ printer.manufacturer }} </h3>
+                    <p class="product-article">{{ printer.article }} </p>
+                    <p class="product-description">{{ printer.description|truncatechars:100 }}</p>
+                    <div class="product-price">{{ printer.price }} ₽</div>
+                    <a href="{% url 'printer_detail' printer.id %}" class="btn">Подробнее</a>
                 </div>
             </div>
-
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="3D Printer Advanced">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">3DPrintPro Advanced</h3>
-                    <p class="product-description">Профессиональное решение для бизнеса и хобби</p>
-                    <div class="product-price">42 990 ₽</div>
-                    <a href="#" class="btn">Подробнее</a>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="3D Printer Pro">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">3DPrintPro Ultimate</h3>
-                    <p class="product-description">Флагманская модель с максимальными возможностями</p>
-                    <div class="product-price">67 990 ₽</div>
-                    <a href="#" class="btn">Подробнее</a>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1581093057305-2551ae19a690?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="3D Printer Industrial">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">3DPrintPro Industrial</h3>
-                    <p class="product-description">Промышленное решение для серийного производства</p>
-                    <div class="product-price">124 990 ₽</div>
-                    <a href="#" class="btn">Подробнее</a>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </section>
 
