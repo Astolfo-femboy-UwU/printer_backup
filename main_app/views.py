@@ -112,6 +112,7 @@ def printer_detail(request, pk):
 @login_required
 def general_page(request):
     printers = Printer.objects.all()
+    context = {"pritners": printers}
     return render(request, "general.html")
 
 
