@@ -34,5 +34,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("printer/<int:pk>/", printer_detail, name="printer_detail"),
     path("general/", general_page, name="general"),
-    path("shopcart/", shopcart, name="shopcart")
+    path("shopcart/", shopcart_page, name="shopcart")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -673,13 +673,13 @@
             <div class="product-card">
                 <div class="product-image">
                     {% if printer.image %}
-                        <img src="{{ printer.image.url }}" alt="{{ printer.manufacturer }} {{ printer.article }}">
+                        <img src="{{ printer.image.url }}" alt="{{ printer.model }} {{ printer.article }}">
                     {% else %}
                         <img src="https://via.placeholder.com/300x200?text=No+Image" alt="No image">
                     {% endif %}
                 </div>
                 <div class="product-info">
-                    <h3 class="product-title">{{ printer.manufacturer }} </h3>
+                    <h3 class="product-title">{{ printer.model }} </h3>
                     <p class="product-article">{{ printer.article }} </p>
                     <p class="product-description">{{ printer.description|truncatechars:100 }}</p>
                     <div class="product-price">{{ printer.price }} ₽</div>
