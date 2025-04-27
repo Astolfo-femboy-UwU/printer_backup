@@ -69,6 +69,13 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="cart_items",
+        null=True,
+        blank=True
+    )
     cart = models.ForeignKey(
         Cart,
         on_delete=models.CASCADE,
