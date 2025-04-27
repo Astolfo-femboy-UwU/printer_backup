@@ -123,6 +123,7 @@ def custom_printers_page(request):
 
 
 def shopcart_page(request):
+    """"""
     cart_items = CartItem.objects.filter(user=request.user)
     total_price = sum(item.total_price for item in cart_items)
 
