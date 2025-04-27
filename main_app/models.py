@@ -40,7 +40,7 @@ class Printer(models.Model):
     article = models.CharField(verbose_name="Артикул", blank=True, max_length=100, unique=True)
     price = models.DecimalField(verbose_name="Цена", blank=True, default=0, max_digits=10, decimal_places=2)
     dimensions = models.CharField(verbose_name="Габариты", blank=True, max_length=50, help_text="Формат: ШхГхВ (мм)")
-    manufacturer = models.CharField(verbose_name="Производитель", blank=True, max_length=100)
+    model = models.CharField(verbose_name="Модель", blank=True, max_length=100)
 
     def __str__(self):
         return f"{self.manufacturer} {self.article}"
@@ -49,3 +49,45 @@ class Printer(models.Model):
 class CustomPrinter(models.Model):
     class Meta:
         app_label = "main_app"
+
+
+class Cart(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='cart'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Корзина пользователя {self.user.username}"
+
+    @property
+    def total_price(self):
+        return sum(item.total_price for item in self.items.all())
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(
+        Cart,
+        on_delete=models.CASCADE,
+        related_name='items'
+    )
+    printer = models.ForeignKey(
+        Printer,
+        on_delete=models.CASCADE
+    )
+    quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('cart', 'printer')  # Один принтер - одна позиция в корзине
+
+    def __str__(self):
+        return f"{self.quantity} x {self.printer.model} {self.printer.article}"
+
+    @property
+    def total_price(self):
+        return self.printer.price * self.quantity
+

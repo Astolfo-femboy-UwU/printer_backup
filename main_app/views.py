@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 
 from .forms import RegistrationForm, LoginForm, ProfileEditForm
-from .models import Profile, Printer
+from .models import Profile, Printer, Cart, CartItem, CustomPrinter
 
 
 def welcome_page(request):
@@ -100,14 +100,19 @@ def edit_profile_page(request):
                   {"form": form})
 
 
+@login_required
 def printer_detail(request, pk):
     printer = get_object_or_404(Printer, pk=pk)
-    print(f"Found printer: {printer}")
     context = {
         'printer': printer,
-        'printers': Printer.objects.exclude(pk=pk)[:4]
     }
     return render(request, 'printer_detail.html', context)
+
+
+@login_required
+def general_page(request):
+    printers = Printer.objects.all()
+    return render(request, "general.html")
 
 
 def custom_printers_page(request):
@@ -115,6 +120,17 @@ def custom_printers_page(request):
     return render(request,
                   "custom_printer_page.html",
                   {})
+
+
+def shopcart_page(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+    total_price = sum(item.total_price for item in cart_items)
+
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price
+    }
+    return render(request, 'shopcart.html', context)
 
 
 @login_required
@@ -126,6 +142,19 @@ def support_page(request):
                   context)
 
 
-def test_view(request, pk):
-    printer = get_object_or_404(Printer, pk=pk)
-    return render(request, 'test.html', {'printer': printer})
+def update_cart(request, item_id):
+    item = get_object_or_404(CartItem, id=item_id, user=request.user)
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'increment':
+            item.quantity += 1
+        elif action == 'decrement' and item.quantity > 1:
+            item.quantity -= 1
+        item.save()
+    return redirect('shopcart')
+
+
+def remove_from_cart(request, item_id):
+    item = get_object_or_404(CartItem, id=item_id, user=request.user)
+    item.delete()
+    return redirect('shopcart')
