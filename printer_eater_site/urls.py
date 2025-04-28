@@ -16,10 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from main_app.views import *
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from django.conf import settings
+
+from main_app.views import (welcome_page,
+                            registration_page, login_page, logout_page,
+                            profile_page, edit_profile_page,
+                            custom_printers_page, general_page, printer_detail,
+                            shopcart_page,
+                            support_page)
+
 
 urlpatterns = [
     path("", welcome_page, name="welcome_page"),

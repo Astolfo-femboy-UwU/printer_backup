@@ -7,7 +7,7 @@ class Profile(models.Model):
 
     Содержит дополнительную информацию о пользователе, включая платежные данные.
 
-    Attributes:
+    Атрибуты:
         user (OneToOneField): Связь один-к-одному с моделью User
         first_name (TextField): Имя пользователя
         last_name (TextField): Фамилия пользователя
@@ -24,7 +24,7 @@ class Profile(models.Model):
     class Meta:
         """Мета-класс для определения метаданных модели.
 
-        Attributes:
+        Атрибуты:
             app_label (str): Указывает приложение, к которому принадлежит модель
         """
         app_label = "main_app"
@@ -58,7 +58,7 @@ class Profile(models.Model):
 class Printer(models.Model):
     """Модель для представления 3D-принтеров в системе.
 
-    Attributes:
+    Атрибуты:
         description (TextField): Подробное описание принтера
         article (CharField): Уникальный артикул принтера
         price (DecimalField): Цена принтера
@@ -69,7 +69,7 @@ class Printer(models.Model):
     class Meta:
         """Мета-класс для определения метаданных модели.
 
-        Attributes:
+        Атрибуты:
             app_label (str): Указывает приложение, к которому принадлежит модель
         """
         app_label = "main_app"
@@ -83,7 +83,7 @@ class Printer(models.Model):
     def __str__(self):
         """Строковое представление объекта Printer.
 
-        Returns:
+        Возвращает:
             str: Строка в формате "Производитель Артикул"
         """
         return f"{self.model} {self.article}"
@@ -98,7 +98,7 @@ class CustomPrinter(models.Model):
     class Meta:
         """Мета-класс для определения метаданных модели.
 
-        Attributes:
+        Атрибуты:
             app_label (str): Указывает приложение, к которому принадлежит модель
         """
         app_label = "main_app"
@@ -107,7 +107,7 @@ class CustomPrinter(models.Model):
 class Cart(models.Model):
     """Модель корзины покупок пользователя.
 
-    Attributes:
+    Атрибуты:
         user (OneToOneField): Связь с пользователем (один пользователь - одна корзина)
         created_at (DateTimeField): Дата и время создания корзины
         updated_at (DateTimeField): Дата и время последнего обновления корзины
@@ -115,7 +115,7 @@ class Cart(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name='cart'
+        related_name="cart"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -123,7 +123,7 @@ class Cart(models.Model):
     def __str__(self):
         """Строковое представление объекта Cart.
 
-        Returns:
+        Возвращает:
             str: Строка в формате "Корзина пользователя username"
         """
         return f"Корзина пользователя {self.user.username}"
@@ -132,7 +132,7 @@ class Cart(models.Model):
     def total_price(self):
         """Вычисляет общую стоимость всех товаров в корзине.
 
-        Returns:
+        Возвращает:
             Decimal: Суммарная стоимость всех товаров в корзине
         """
         return sum(item.total_price for item in self.items.all())
@@ -141,7 +141,7 @@ class Cart(models.Model):
 class CartItem(models.Model):
     """Модель элемента корзины покупок.
 
-    Attributes:
+    Атрибуты:
         user (ForeignKey): Связь с пользователем (для быстрого доступа)
         cart (ForeignKey): Связь с корзиной
         printer (ForeignKey): Связь с принтером
@@ -158,7 +158,7 @@ class CartItem(models.Model):
     cart = models.ForeignKey(
         Cart,
         on_delete=models.CASCADE,
-        related_name='items'
+        related_name="items"
     )
     printer = models.ForeignKey(
         Printer,
@@ -170,15 +170,15 @@ class CartItem(models.Model):
     class Meta:
         """Мета-класс для определения метаданных модели.
 
-        Attributes:
+        Атрибуты:
             unique_together (tuple): Гарантирует уникальность пары (корзина, принтер)
         """
-        unique_together = ('cart', 'printer')  # Один принтер - одна позиция в корзине
+        unique_together = ("cart", "printer")  # Один принтер - одна позиция в корзине
 
     def __str__(self):
         """Строковое представление объекта CartItem.
 
-        Returns:
+        Возвращает:
             str: Строка в формате "Количество x Модель Артикул"
         """
         return f"{self.quantity} x {self.printer.model} {self.printer.article}"
@@ -187,7 +187,7 @@ class CartItem(models.Model):
     def total_price(self):
         """Вычисляет общую стоимость позиции (цена * количество).
 
-        Returns:
+        Возвращает:
             Decimal: Стоимость позиции (цена принтера * количество)
         """
         return self.printer.price * self.quantity

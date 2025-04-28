@@ -1,3 +1,4 @@
+"""Конфигурация форм"""
 from django import forms
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -5,39 +6,90 @@ from .models import Profile
 
 
 class RegistrationForm(forms.ModelForm):
-    """Form for registration"""
+    """Форма регистрации нового пользователя.
+
+    Атрибуты:
+        password (CharField): Поле для ввода пароля
+        password2 (CharField): Поле для подтверждения пароля
+    """
     password = forms.CharField(label="Пароль", widget=forms.PasswordInput)
     password2 = forms.CharField(label="Подтверждение пароля", widget=forms.PasswordInput)
 
     class Meta:
+        """Мета-класс для настройки формы.
+
+        Атрибуты:
+            model (User): Модель, с которой связана форма
+            fields (list): Список полей для отображения в форме
+        """
         model = User
         fields = ["username", "first_name", "last_name", "email", "password"]
 
     def clean_first_name(self):
+        """Валидация поля имени.
+
+        Возвращает:
+            str: Очищенное значение имени
+
+        Raises:
+            ValidationError: Если имя содержит не только буквы
+        """
         first_name = self.cleaned_data.get("first_name")
-        if not all(i.isalpha for i in first_name):
+        if not all(i.isalpha() for i in first_name):
             raise forms.ValidationError("Имя должно содержать только буквы")
         return first_name
 
     def clean_last_name(self):
+        """Валидация поля фамилии.
+
+        Возвращает:
+            str: Очищенное значение фамилии
+
+        Raises:
+            ValidationError: Если фамилия содержит не только буквы
+        """
         last_name = self.cleaned_data.get("last_name")
-        if not all(i.isalpha for i in last_name):
+        if not all(i.isalpha() for i in last_name):
             raise forms.ValidationError("Фамилия должна содержать только буквы")
         return last_name
 
     def clean_username(self):
+        """Проверка уникальности имени пользователя.
+
+        Возвращает:
+            str: Очищенное имя пользователя
+
+        Raises:
+            ValidationError: Если имя пользователя уже занято
+        """
         username = self.cleaned_data.get("username")
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError("Это имя пользователя уже занято")
         return username
 
     def clean_email(self):
+        """Проверка уникальности email.
+
+        Возвращает:
+            str: Очищенный email
+
+        Raises:
+            ValidationError: Если email уже используется
+        """
         email = self.cleaned_data.get("email")
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Этот адрес электронной почты уже используется")
         return email
 
     def clean_password2(self):
+        """Проверка совпадения паролей.
+
+        Возвращает:
+            str: Подтвержденный пароль
+
+        Raises:
+            ValidationError: Если пароли не совпадают
+        """
         password = self.cleaned_data.get("password")
         password2 = self.cleaned_data.get("password2")
         if password != password2:
@@ -46,11 +98,21 @@ class RegistrationForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    """Form for logging in"""
+    """Форма входа в систему.
+
+    Атрибуты:
+        username (CharField): Поле для ввода имени пользователя
+        password (CharField): Поле для ввода пароля
+    """
     username = forms.CharField(label="Имя пользователя", max_length=150)
     password = forms.CharField(label="Пароль", widget=forms.PasswordInput)
 
     def clean(self):
+        """Общая валидация формы входа.
+
+        Вызывает:
+            ValidationError: Если не введены имя пользователя или пароль
+        """
         cleaned_data = super().clean()
         username = cleaned_data.get("username")
         password = cleaned_data.get("password")
@@ -59,15 +121,30 @@ class LoginForm(forms.Form):
 
 
 class ProfileForm(forms.ModelForm):
+    """Форма для создания профиля пользователя."""
 
     class Meta:
+        """Мета-класс для настройки формы.
+
+        Атрибуты:
+            model (Profile): Модель профиля
+            fields (list): Список полей для отображения
+        """
         model = Profile
         fields = ["first_name", "last_name", "username", "email"]
 
 
 class ProfileEditForm(forms.ModelForm):
-    """Form for profile editing"""
+    """Форма редактирования профиля пользователя."""
+
     class Meta:
+        """Мета-класс для настройки формы.
+
+        Атрибуты:
+            model (Profile): Модель профиля
+            app_label (str): Название приложения
+            fields (list): Список полей для редактирования
+        """
         model = Profile
         app_label = "main_app"
         fields = [
@@ -77,6 +154,7 @@ class ProfileEditForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
+        """Инициализация формы с предзаполненными данными из модели User."""
         super().__init__(*args, **kwargs)
         if self.instance.user:
             self.fields["first_name"].initial = self.instance.user.first_name
@@ -84,31 +162,32 @@ class ProfileEditForm(forms.ModelForm):
             self.fields["email"].initial = self.instance.user.email
 
     def clean_first_name(self):
+        """Валидация поля имени."""
         first_name = self.cleaned_data.get("first_name")
-        if not all(i.isalpha for i in first_name):
+        if not all(i.isalpha() for i in first_name):
             raise forms.ValidationError("Имя должно содержать только буквы")
         return first_name
 
     def clean_last_name(self):
+        """Валидация поля фамилии."""
         last_name = self.cleaned_data.get("last_name")
-        if not all(i.isalpha for i in last_name):
+        if not all(i.isalpha() for i in last_name):
             raise forms.ValidationError("Фамилия должна содержать только буквы")
         return last_name
 
     def clean_username(self):
+        """Валидация имени пользователя."""
         username = self.cleaned_data.get("username")
-        # if User.objects.filter(username=username).exists():
-        #     raise forms.ValidationError("Это имя пользователя уже занято")
         return username
 
     def clean_email(self):
+        """Валидация email."""
         email = self.cleaned_data.get("email")
-        # if User.objects.filter(email=email).exists():
-        #     raise forms.ValidationError("Этот адрес электронной почты уже используется")
         return email
 
+    # Поля для выбора срока действия карты
     expiry_month = forms.TypedChoiceField(
-        choices=[(i, f"{i:02d}") for i in range(1, 13)],  # Формат "01", "02", ...
+        choices=[(i, f"{i:02d}") for i in range(1, 13)],
         coerce=int,
         required=False,
         empty_value=None

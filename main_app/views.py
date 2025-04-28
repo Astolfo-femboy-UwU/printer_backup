@@ -1,3 +1,4 @@
+"""View-функции. Передают данные на html-страницы"""
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login
@@ -102,6 +103,7 @@ def edit_profile_page(request):
 
 @login_required
 def printer_detail(request, pk):
+    """Функция для для отображения карточки товара отдельно"""
     printer = get_object_or_404(Printer, pk=pk)
     context = {
         'printer': printer,
@@ -111,9 +113,10 @@ def printer_detail(request, pk):
 
 @login_required
 def general_page(request):
+    """Функция отображения страницы с каталогом принтеров"""
     printers = Printer.objects.all()
     context = {"pritners": printers}
-    return render(request, "general.html")
+    return render(request, "general.html", context)
 
 
 def custom_printers_page(request):
@@ -124,7 +127,7 @@ def custom_printers_page(request):
 
 
 def shopcart_page(request):
-    """"""
+    """View-функция """
     cart_items = CartItem.objects.filter(user=request.user)
     total_price = sum(item.total_price for item in cart_items)
 
@@ -145,6 +148,7 @@ def support_page(request):
 
 
 def update_cart(request, item_id):
+    """Функция обновления корзины"""
     item = get_object_or_404(CartItem, id=item_id, user=request.user)
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -157,6 +161,7 @@ def update_cart(request, item_id):
 
 
 def remove_from_cart(request, item_id):
+    """Функция удаления объекта из корзины"""
     item = get_object_or_404(CartItem, id=item_id, user=request.user)
     item.delete()
     return redirect('shopcart')
