@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from time import timezone
+
+from printer_eater_site import settings
+
 
 class Profile(models.Model):
     """Модель профиля пользователя, расширяющая стандартную модель User.
@@ -118,7 +122,6 @@ class Cart(models.Model):
         related_name="cart"
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         """Строковое представление объекта Cart.
@@ -192,3 +195,54 @@ class CartItem(models.Model):
         """
         return self.printer.price * self.quantity
 
+
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('new', 'Новый'),
+        ('processing', 'В обработке'),
+        ('shipped', 'Отправлен'),
+        ('completed', 'Завершен'),
+        ('cancelled', 'Отменен'),
+    ]
+
+    PAYMENT_METHODS = [
+        ('card', 'Кредитная карта'),
+        ('cash', 'Наличные при получении'),
+        ('online', 'Онлайн-оплата'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_number = models.CharField(max_length=20, unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    address = models.TextField()
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='new')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"Заказ #{self.order_number} - {self.get_status_display()}"
+
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            self.order_number = f"{timezone.now().strftime('%Y%m%d')}-{self.id}"
+        super().save(*args, **kwargs)
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    printer = models.ForeignKey(Printer, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.printer.model} (Заказ #{self.order.order_number})"
+
+    @property
+    def total_price(self):
+        return self.price * self.quantity

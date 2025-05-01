@@ -6,8 +6,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 
-from .forms import RegistrationForm, LoginForm, ProfileEditForm
-from .models import Profile, Printer, Cart, CartItem, CustomPrinter
+from .forms import RegistrationForm, LoginForm, ProfileEditForm, CheckoutForm
+from .models import Profile, Printer, Cart, CartItem, CustomPrinter, Order, OrderItem
 
 
 def welcome_page(request):
@@ -103,12 +103,32 @@ def edit_profile_page(request):
 
 @login_required
 def printer_detail(request, pk):
-    """Функция для для отображения карточки товара отдельно"""
     printer = get_object_or_404(Printer, pk=pk)
+
+    if request.method == 'POST' and 'add_to_cart' in request.POST:
+        return add_to_cart(request, printer)
+
     context = {
         'printer': printer,
     }
     return render(request, 'printer_detail.html', context)
+
+
+@login_required
+def add_to_cart(request, printer):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart,
+        printer=printer,
+        defaults={'quantity': 1}
+    )
+
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+
+    messages.success(request, f"{printer.model} добавлен в корзину!")
+    return redirect('printer_detail', pk=printer.id)
 
 
 @login_required
@@ -147,21 +167,79 @@ def support_page(request):
                   context)
 
 
-def update_cart(request, item_id):
-    """Функция обновления корзины"""
-    item = get_object_or_404(CartItem, id=item_id, user=request.user)
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        if action == 'increment':
-            item.quantity += 1
-        elif action == 'decrement' and item.quantity > 1:
-            item.quantity -= 1
-        item.save()
-    return redirect('shopcart')
-
-
 def remove_from_cart(request, item_id):
     """Функция удаления объекта из корзины"""
     item = get_object_or_404(CartItem, id=item_id, user=request.user)
     item.delete()
     return redirect('shopcart')
+
+
+@login_required
+def checkout_page(request):
+    # Получаем корзину текущего пользователя
+    cart = get_object_or_404(Cart, user=request.user)
+    cart_items = cart.items.all()
+
+    # Если корзина пуста - редирект
+    if not cart_items:
+        messages.warning(request, "Ваша корзина пуста")
+        return redirect('cart_view')
+
+    total_price = cart.total_price
+
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            # Создаем заказ
+            order = Order.objects.create(
+                user=request.user,
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+                email=form.cleaned_data['email'],
+                phone=form.cleaned_data['phone'],
+                address=form.cleaned_data['address'],
+                total_price=total_price,
+                payment_method=form.cleaned_data['payment_method'],
+                notes=form.cleaned_data['notes']
+            )
+
+            # Переносим товары из корзины в заказ
+            for cart_item in cart_items:
+                OrderItem.objects.create(
+                    order=order,
+                    printer=cart_item.printer,
+                    quantity=cart_item.quantity,
+                    price=cart_item.printer.price
+                )
+
+            # Очищаем корзину
+            cart_items.delete()
+
+            messages.success(request, "Ваш заказ успешно оформлен! Номер заказа: #{}".format(order.id))
+            return redirect('order_detail', order_id=order.id)
+    else:
+        # Заполняем форму данными из профиля пользователя
+        initial_data = {
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email,
+        }
+
+        try:
+            profile = request.user.profile
+            initial_data.update({
+                'phone': profile.phone,
+                'address': profile.billing_address,
+            })
+        except Profile.DoesNotExist:
+            pass
+
+        form = CheckoutForm(initial=initial_data)
+
+    context = {
+        'form': form,
+        'cart_items': cart_items,
+        'total_price': total_price,
+    }
+
+    return render(request, 'checkout.html', context)

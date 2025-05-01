@@ -24,7 +24,7 @@ from main_app.views import (welcome_page,
                             registration_page, login_page, logout_page,
                             profile_page, edit_profile_page,
                             custom_printers_page, general_page, printer_detail,
-                            shopcart_page,
+                            shopcart_page, checkout_page,
                             support_page)
 
 
@@ -41,5 +41,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("printer/<int:pk>/", printer_detail, name="printer_detail"),
     path("general/", general_page, name="general"),
-    path("shopcart/", shopcart_page, name="shopcart")
+    path("shopcart/", shopcart_page, name="shopcart"),
+    path("checkout/", checkout_page, name="checkout")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
