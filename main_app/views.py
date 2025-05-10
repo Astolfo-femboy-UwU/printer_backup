@@ -86,9 +86,9 @@ def edit_profile_page(request):
         if form.is_valid():
             profile = form.save(commit=False)
             user = request.user
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.email = form.cleaned_data['email']
+            user.first_name = form.cleaned_data["first_name"]
+            user.last_name = form.cleaned_data["last_name"]
+            user.email = form.cleaned_data["email"]
             user.save()
             profile.save()
             messages.success(request, "Профиль успешно обновлён")
@@ -105,13 +105,13 @@ def edit_profile_page(request):
 def printer_detail(request, pk):
     printer = get_object_or_404(Printer, pk=pk)
 
-    if request.method == 'POST' and 'add_to_cart' in request.POST:
+    if request.method == "POST" and "add_to_cart" in request.POST:
         return add_to_cart(request, printer)
 
     context = {
-        'printer': printer,
+        "printer": printer,
     }
-    return render(request, 'printer_detail.html', context)
+    return render(request, "printer_detail.html", context)
 
 
 @login_required
@@ -120,7 +120,7 @@ def add_to_cart(request, printer):
     cart_item, created = CartItem.objects.get_or_create(
         cart=cart,
         printer=printer,
-        defaults={'quantity': 1, 'user': request.user}  # Добавляем user при создании
+        defaults={"quantity": 1, "user": request.user}  # Добавляем user при создании
     )
 
     if not created:
@@ -128,7 +128,7 @@ def add_to_cart(request, printer):
         cart_item.save()
 
     messages.success(request, f"{printer.model} добавлен в корзину!")
-    return redirect('printer_detail', pk=printer.id)
+    return redirect("printer_detail", pk=printer.id)
 
 
 @login_required
@@ -158,27 +158,27 @@ def shopcart_page(request):
         total_price = 0
 
     context = {
-        'cart_items': cart_items,
-        'total_price': total_price
+        "cart_items": cart_items,
+        "total_price": total_price
     }
-    return render(request, 'shopcart.html', context)
+    return render(request, "shopcart.html", context)
 
 
 @login_required
 def update_cart_item(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, user=request.user)
 
-    if request.method == 'POST':
-        action = request.POST.get('action')
+    if request.method == "POST":
+        action = request.POST.get("action")
 
-        if action == 'increase':
+        if action == "increase":
             item.quantity += 1
-        elif action == 'decrease' and item.quantity > 1:
+        elif action == "decrease" and item.quantity > 1:
             item.quantity -= 1
 
         item.save()
 
-    return redirect('shopcart')
+    return redirect("shopcart")
 
 
 @login_required
@@ -187,7 +187,7 @@ def remove_from_cart(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, user=request.user)
     item.delete()
     messages.success(request, "Товар удален из корзины")
-    return redirect('shopcart')
+    return redirect("shopcart")
 
 
 @login_required
@@ -211,24 +211,24 @@ def checkout_page(request):
     # Если корзина пуста - редирект
     if not cart_items:
         messages.warning(request, "Ваша корзина пуста")
-        return redirect('cart_view')
+        return redirect("cart_view")
 
     total_price = cart.total_price
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CheckoutForm(request.POST)
         if form.is_valid():
             # Создаем заказ
             order = Order.objects.create(
                 user=request.user,
-                first_name=form.cleaned_data['first_name'],
-                last_name=form.cleaned_data['last_name'],
-                email=form.cleaned_data['email'],
-                phone=form.cleaned_data['phone'],
-                address=form.cleaned_data['address'],
+                first_name=form.cleaned_data["first_name"],
+                last_name=form.cleaned_data["last_name"],
+                email=form.cleaned_data["email"],
+                phone=form.cleaned_data["phone"],
+                address=form.cleaned_data["address"],
                 total_price=total_price,
-                payment_method=form.cleaned_data['payment_method'],
-                notes=form.cleaned_data['notes']
+                payment_method=form.cleaned_data["payment_method"],
+                notes=form.cleaned_data["notes"]
             )
 
             # Переносим товары из корзины в заказ
@@ -244,20 +244,20 @@ def checkout_page(request):
             cart_items.delete()
 
             messages.success(request, "Ваш заказ успешно оформлен! Номер заказа: #{}".format(order.id))
-            return redirect('order_detail', order_id=order.id)
+            return redirect("order_detail", order_id=order.id)
     else:
         # Заполняем форму данными из профиля пользователя
         initial_data = {
-            'first_name': request.user.first_name,
-            'last_name': request.user.last_name,
-            'email': request.user.email,
+            "first_name": request.user.first_name,
+            "last_name": request.user.last_name,
+            "email": request.user.email,
         }
 
         try:
             profile = request.user.profile
             initial_data.update({
-                'phone': profile.phone,
-                'address': profile.billing_address,
+                "phone": profile.phone,
+                "address": profile.billing_address,
             })
         except Profile.DoesNotExist:
             pass
@@ -265,9 +265,9 @@ def checkout_page(request):
         form = CheckoutForm(initial=initial_data)
 
     context = {
-        'form': form,
-        'cart_items': cart_items,
-        'total_price': total_price,
+        "form": form,
+        "cart_items": cart_items,
+        "total_price": total_price,
     }
 
-    return render(request, 'checkout.html', context)
+    return render(request, "checkout.html", context)
