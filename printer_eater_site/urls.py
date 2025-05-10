@@ -6,13 +6,13 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 Examples:
 Function views
     1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+    2. Add a URL to urlpatterns:  path("", views.home, name="home")
 Class-based views
     1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+    2. Add a URL to urlpatterns:  path("", Home.as_view(), name="home")
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+    2. Add a URL to urlpatterns:  path("blog/", include("blog.urls"))
 """
 from django.contrib import admin
 from django.urls import path
@@ -24,7 +24,7 @@ from main_app.views import (welcome_page,
                             registration_page, login_page, logout_page,
                             profile_page, edit_profile_page,
                             custom_printers_page, general_page, printer_detail,
-                            shopcart_page, checkout_page,
+                            shopcart_page, checkout_page, update_cart_item, remove_from_cart,
                             support_page)
 
 
@@ -42,5 +42,7 @@ urlpatterns = [
     path("printer/<int:pk>/", printer_detail, name="printer_detail"),
     path("general/", general_page, name="general"),
     path("shopcart/", shopcart_page, name="shopcart"),
-    path("checkout/", checkout_page, name="checkout")
+    path("checkout/", checkout_page, name="checkout"),
+    path("update/<int:item_id>/", update_cart_item, name="update_cart_item"),
+    path("remove/<int:item_id>/", remove_from_cart, name="remove_from_cart")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

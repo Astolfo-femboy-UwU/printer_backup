@@ -120,7 +120,7 @@ def add_to_cart(request, printer):
     cart_item, created = CartItem.objects.get_or_create(
         cart=cart,
         printer=printer,
-        defaults={'quantity': 1}
+        defaults={'quantity': 1, 'user': request.user}  # Добавляем user при создании
     )
 
     if not created:
@@ -146,16 +146,48 @@ def custom_printers_page(request):
                   {})
 
 
+@login_required
 def shopcart_page(request):
-    """View-функция """
-    cart_items = CartItem.objects.filter(user=request.user)
-    total_price = sum(item.total_price for item in cart_items)
+    """View-функция для страницы корзины"""
+    try:
+        cart = Cart.objects.get(user=request.user)
+        cart_items = cart.items.all()
+        total_price = cart.total_price
+    except Cart.DoesNotExist:
+        cart_items = []
+        total_price = 0
 
     context = {
         'cart_items': cart_items,
         'total_price': total_price
     }
     return render(request, 'shopcart.html', context)
+
+
+@login_required
+def update_cart_item(request, item_id):
+    item = get_object_or_404(CartItem, id=item_id, user=request.user)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'increase':
+            item.quantity += 1
+        elif action == 'decrease' and item.quantity > 1:
+            item.quantity -= 1
+
+        item.save()
+
+    return redirect('shopcart')
+
+
+@login_required
+def remove_from_cart(request, item_id):
+    """Функция удаления объекта из корзины"""
+    item = get_object_or_404(CartItem, id=item_id, user=request.user)
+    item.delete()
+    messages.success(request, "Товар удален из корзины")
+    return redirect('shopcart')
 
 
 @login_required
@@ -167,11 +199,7 @@ def support_page(request):
                   context)
 
 
-def remove_from_cart(request, item_id):
-    """Функция удаления объекта из корзины"""
-    item = get_object_or_404(CartItem, id=item_id, user=request.user)
-    item.delete()
-    return redirect('shopcart')
+
 
 
 @login_required
