@@ -155,8 +155,6 @@ class CartItem(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name="cart_items",
-        null=True,
-        blank=True
     )
     cart = models.ForeignKey(
         Cart,

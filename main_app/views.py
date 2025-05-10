@@ -166,27 +166,35 @@ def shopcart_page(request):
 
 @login_required
 def update_cart_item(request, item_id):
-    item = get_object_or_404(CartItem, id=item_id, user=request.user)
+    """Обновление количества товара в корзине"""
+    try:
+        item = CartItem.objects.get(id=item_id, cart__user=request.user)
+        if request.method == "POST":
+            action = request.POST.get("action")
 
-    if request.method == "POST":
-        action = request.POST.get("action")
+            if action == "increase":
+                item.quantity += 1
+            elif action == "decrease":
+                item.quantity = max(1, item.quantity - 1)
 
-        if action == "increase":
-            item.quantity += 1
-        elif action == "decrease" and item.quantity > 1:
-            item.quantity -= 1
-
-        item.save()
+            item.save()
+            messages.success(request, "Количество обновлено")
+    except CartItem.DoesNotExist:
+        messages.error(request, "Товар не найден в корзине")
 
     return redirect("shopcart")
 
 
 @login_required
 def remove_from_cart(request, item_id):
-    """Функция удаления объекта из корзины"""
-    item = get_object_or_404(CartItem, id=item_id, user=request.user)
-    item.delete()
-    messages.success(request, "Товар удален из корзины")
+    """Удаление товара из корзины"""
+    try:
+        item = CartItem.objects.get(id=item_id, cart__user=request.user)
+        item.delete()
+        messages.success(request, "Товар удален из корзины")
+    except CartItem.DoesNotExist:
+        messages.error(request, "Товар не найден в корзине")
+
     return redirect("shopcart")
 
 
