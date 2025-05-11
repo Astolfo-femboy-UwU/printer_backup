@@ -26,7 +26,7 @@ from main_app.views import (welcome_page,
                             custom_printers_page, general_page, printer_detail,
                             shopcart_page, checkout_page, update_cart_item, remove_from_cart,
                             support_page)
-
+from main_app.chatbot import chat_page, chat_api
 
 urlpatterns = [
     path("", welcome_page, name="welcome_page"),
@@ -44,5 +44,7 @@ urlpatterns = [
     path("shopcart/", shopcart_page, name="shopcart"),
     path("checkout/", checkout_page, name="checkout"),
     path("shopcart/update/<int:item_id>/", update_cart_item, name="update_cart_item"),
-    path("shopcart/remove/<int:item_id>/", remove_from_cart, name="remove_from_cart")
+    path("shopcart/remove/<int:item_id>/", remove_from_cart, name="remove_from_cart"),
+    path("chat/", chat_page, name="chat_page"),
+    path("chat/api/", chat_api, name="chat_api"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

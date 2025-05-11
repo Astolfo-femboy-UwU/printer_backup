@@ -242,3 +242,15 @@ class OrderItem(models.Model):
     @property
     def total_price(self):
         return self.price * self.quantity
+
+
+class ChatHistory(models.Model):
+    user_message = models.TextField(max_length=1000)
+    bot_response = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Chat at {self.created_at}"
