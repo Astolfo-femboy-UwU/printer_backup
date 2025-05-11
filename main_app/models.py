@@ -1,9 +1,7 @@
-from django.db import models
-from django.contrib.auth.models import User
-
 from time import timezone
 
-from printer_eater_site import settings
+from django.db import models
+from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
@@ -78,10 +76,10 @@ class Printer(models.Model):
         """
         app_label = "main_app"
 
-    description = models.TextField(verbose_name="Описание", blank=True, null=True)
-    article = models.CharField(verbose_name="Артикул", blank=True, max_length=100, unique=True)
-    price = models.DecimalField(verbose_name="Цена", blank=True, default=0, max_digits=10, decimal_places=2)
-    dimensions = models.CharField(verbose_name="Габариты", blank=True, max_length=50, help_text="Формат: ШхГхВ (мм)")
+    description = models.TextField(verbose_name="Описание")
+    article = models.CharField(verbose_name="Артикул", max_length=100, unique=True)
+    price = models.DecimalField(verbose_name="Цена", default=0, max_digits=10, decimal_places=2)
+    dimensions = models.CharField(verbose_name="Габариты", max_length=50, help_text="Формат: ШхГхВ (мм)")
     model = models.CharField(verbose_name="Модель", blank=True, max_length=100)
 
     def __str__(self):

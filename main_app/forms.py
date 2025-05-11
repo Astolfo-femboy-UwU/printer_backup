@@ -201,22 +201,77 @@ class ProfileEditForm(forms.ModelForm):
 
 
 class CheckoutForm(forms.Form):
-    first_name = forms.CharField(label='Имя', max_length=100, required=True)
-    last_name = forms.CharField(label='Фамилия', max_length=100, required=True)
-    email = forms.EmailField(label='Email', required=True)
-    phone = forms.CharField(label='Телефон', max_length=20, required=True)
+    """Форма оформления заказа для интернет-магазина 3DPrintPro.
+
+    Содержит все необходимые поля для сбора информации о покупателе,
+    доставке и оплате заказа. Валидирует обязательные поля перед
+    созданием заказа в системе.
+
+    Attributes:
+        first_name (CharField): Имя покупателя (обязательное поле).
+        last_name (CharField): Фамилия покупателя (обязательное поле).
+        email (EmailField): Электронная почта для уведомлений (обязательное).
+        phone (CharField): Контактный телефон (обязательное поле).
+        address (CharField): Адрес доставки с многострочным вводом.
+        payment_method (ChoiceField): Способ оплаты (радио-кнопки).
+        notes (CharField): Дополнительные пожелания к заказу (необязательное).
+    """
+    first_name = forms.CharField(
+        label='Имя',
+        max_length=100,
+        required=True,
+        help_text="Укажите ваше имя как в паспорте"
+    )
+    last_name = forms.CharField(
+        label='Фамилия',
+        max_length=100,
+        required=True,
+        help_text="Укажите вашу фамилию"
+    )
+    email = forms.EmailField(
+        label='Email',
+        required=True,
+        help_text="На этот адрес придет подтверждение заказа"
+    )
+    phone = forms.CharField(
+        label='Телефон',
+        max_length=20,
+        required=True,
+        help_text="Формат: +7XXXXXXXXXX"
+    )
     address = forms.CharField(
         label='Адрес доставки',
         widget=forms.Textarea(attrs={'rows': 3}),
-        required=True
+        required=True,
+        help_text="Полный адрес с индексом и городом"
     )
     payment_method = forms.ChoiceField(
         label='Способ оплаты',
         choices=Order.PAYMENT_METHODS,
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        help_text="Выберите предпочтительный способ оплаты"
     )
     notes = forms.CharField(
         label='Примечания к заказу',
         widget=forms.Textarea(attrs={'rows': 2}),
-        required=False
+        required=False,
+        help_text="Дополнительные пожелания по доставке"
     )
+
+    def clean_phone(self):
+        """Валидация номера телефона.
+
+        Проверяет корректность формата номера и нормализует его.
+
+        Returns:
+            str: Очищенный номер телефона.
+
+        Raises:
+            ValidationError: Если номер не соответствует ожидаемому формату.
+        """
+        phone = self.cleaned_data['phone']
+        # Удаляем все нецифровые символы
+        cleaned_phone = ''.join(filter(str.isdigit, phone))
+        if len(cleaned_phone) not in (10, 11):
+            raise forms.ValidationError("Номер должен содержать 10-11 цифр")
+        return f"+7{cleaned_phone[-10:]}"

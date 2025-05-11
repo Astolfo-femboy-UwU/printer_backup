@@ -1,4 +1,13 @@
-"""View-функции. Передают данные на html-страницы"""
+"""View-функции приложения main_app.
+
+Содержит обработчики запросов для:
+- Авторизации и регистрации пользователей
+- Работы с профилем
+- Взаимодействия с каталогом товаров
+- Управления корзиной покупок
+- Оформления заказов
+"""
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login
@@ -7,18 +16,35 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 
 from .forms import RegistrationForm, LoginForm, ProfileEditForm, CheckoutForm
-from .models import Profile, Printer, Cart, CartItem, CustomPrinter, Order, OrderItem
+from .models import Profile, Printer, Cart, CartItem, Order, OrderItem
 
 
 def welcome_page(request):
-    """View function for the main (welcome) page"""
+    """Обрабатывает запросы к главной странице.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponse: Рендер шаблона welcome_page.html с контекстом:
+            - printers (QuerySet): Список принтеров, отсортированный по цене
+    """
     printers = Printer.objects.all().order_by("price")
     context = {"printers": printers}
     return render(request, "welcome_page.html", context)
 
 
 def registration_page(request):
-    """View function for registration"""
+    """Обрабатывает регистрацию новых пользователей.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponse:
+            - При успешной регистрации: редирект на главную
+            - При GET-запросе: рендер формы регистрации
+    """
     if request.method == "POST":
         reg_form = RegistrationForm(request.POST)
         if reg_form.is_valid():
@@ -42,7 +68,16 @@ def registration_page(request):
 
 
 def login_page(request):
-    """View function for logging in"""
+    """Обрабатывает аутентификацию пользователей.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponse:
+            - При успешном входе: редирект на главную
+            - При ошибке: форма с сообщением об ошибке
+    """
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -62,7 +97,14 @@ def login_page(request):
 
 @login_required
 def logout_page(request):
-    """View function for logging out"""
+    """Обрабатывает выход пользователя из системы.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponseRedirect: Редирект на главную с сообщением об успешном выходе
+    """
     logout(request)
     messages.success(request, "Вы успешно вышли из аккаунта")
     return redirect("/")
@@ -70,7 +112,15 @@ def logout_page(request):
 
 @login_required
 def profile_page(request):
-    """View function for profile page"""
+    """Отображает страницу профиля пользователя.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponse: Рендер шаблона user_profile.html с контекстом:
+            - profile (Profile): Профиль текущего пользователя
+    """
     profile = request.user.profile
     return render(request,
                   "user_profile.html",
@@ -79,7 +129,16 @@ def profile_page(request):
 
 @login_required
 def edit_profile_page(request):
-    """View function for editing profile page"""
+    """Обрабатывает редактирование профиля пользователя.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponse:
+            - При успешном сохранении: редирект на страницу профиля
+            - При GET-запросе: форма редактирования профиля
+    """
     profile = request.user.profile
     if request.method == "POST":
         form = ProfileEditForm(request.POST, instance=profile)
@@ -103,6 +162,16 @@ def edit_profile_page(request):
 
 @login_required
 def printer_detail(request, pk):
+    """Отображает детальную страницу принтера.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+        pk (int): ID принтера в базе данных
+
+    Returns:
+        HttpResponse: Рендер шаблона printer_detail.html с контекстом:
+            - printer (Printer): Объект запрашиваемого принтера
+    """
     printer = get_object_or_404(Printer, pk=pk)
 
     if request.method == "POST" and "add_to_cart" in request.POST:
@@ -116,11 +185,20 @@ def printer_detail(request, pk):
 
 @login_required
 def add_to_cart(request, printer):
+    """Добавляет принтер в корзину пользователя.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+        printer (Printer): Объект добавляемого принтера
+
+    Returns:
+        HttpResponseRedirect: Редирект на страницу принтера с сообщением
+    """
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart_item, created = CartItem.objects.get_or_create(
         cart=cart,
         printer=printer,
-        defaults={"quantity": 1, "user": request.user}  # Добавляем user при создании
+        defaults={"quantity": 1, "user": request.user}
     )
 
     if not created:
@@ -133,22 +211,44 @@ def add_to_cart(request, printer):
 
 @login_required
 def general_page(request):
-    """Функция отображения страницы с каталогом принтеров"""
+    """Отображает страницу каталога принтеров.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponse: Рендер шаблона general.html с контекстом:
+            - printers (QuerySet): Список всех принтеров
+    """
     printers = Printer.objects.all()
-    context = {"pritners": printers}
+    context = {"printers": printers}
     return render(request, "general.html", context)
 
 
 def custom_printers_page(request):
-    """View function for custom printers page"""
-    return render(request,
-                  "custom_printer_page.html",
-                  {})
+    """Отображает страницу кастомных принтеров.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponse: Рендер шаблона custom_printer_page.html
+    """
+    return render(request, "custom_printer_page.html", {})
 
 
 @login_required
 def shopcart_page(request):
-    """View-функция для страницы корзины"""
+    """Отображает страницу корзины пользователя.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponse: Рендер шаблона shopcart.html с контекстом:
+            - cart_items (QuerySet): Товары в корзине
+            - total_price (Decimal): Общая стоимость заказа
+    """
     try:
         cart = Cart.objects.get(user=request.user)
         cart_items = cart.items.all()
@@ -166,7 +266,15 @@ def shopcart_page(request):
 
 @login_required
 def update_cart_item(request, item_id):
-    """Обновление количества товара в корзине"""
+    """Обновляет количество товара в корзине.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+        item_id (int): ID элемента корзины
+
+    Returns:
+        HttpResponseRedirect: Редирект на страницу корзины
+    """
     try:
         item = CartItem.objects.get(id=item_id, cart__user=request.user)
         if request.method == "POST":
@@ -187,7 +295,15 @@ def update_cart_item(request, item_id):
 
 @login_required
 def remove_from_cart(request, item_id):
-    """Удаление товара из корзины"""
+    """Удаляет товар из корзины.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+        item_id (int): ID элемента корзины
+
+    Returns:
+        HttpResponseRedirect: Редирект на страницу корзины
+    """
     try:
         item = CartItem.objects.get(id=item_id, cart__user=request.user)
         item.delete()
@@ -200,33 +316,42 @@ def remove_from_cart(request, item_id):
 
 @login_required
 def support_page(request):
-    """View function for support page"""
+    """Отображает страницу поддержки.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponse: Рендер шаблона support_page.html
+    """
     context = {}
-    return render(request,
-                  "support_page.html",
-                  context)
-
-
-
+    return render(request, "support_page.html", context)
 
 
 @login_required
 def checkout_page(request):
-    # Получаем корзину текущего пользователя
+    """Обрабатывает оформление заказа.
+
+    Args:
+        request (HttpRequest): Объект запроса Django
+
+    Returns:
+        HttpResponse:
+            - При успешном оформлении: редирект на детали заказа
+            - При GET-запросе: форма оформления заказа
+    """
     cart = get_object_or_404(Cart, user=request.user)
     cart_items = cart.items.all()
 
-    # Если корзина пуста - редирект
     if not cart_items:
         messages.warning(request, "Ваша корзина пуста")
-        return redirect("cart_view")
+        return redirect("shopcart")
 
     total_price = cart.total_price
 
     if request.method == "POST":
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            # Создаем заказ
             order = Order.objects.create(
                 user=request.user,
                 first_name=form.cleaned_data["first_name"],
@@ -239,7 +364,6 @@ def checkout_page(request):
                 notes=form.cleaned_data["notes"]
             )
 
-            # Переносим товары из корзины в заказ
             for cart_item in cart_items:
                 OrderItem.objects.create(
                     order=order,
@@ -248,13 +372,10 @@ def checkout_page(request):
                     price=cart_item.printer.price
                 )
 
-            # Очищаем корзину
             cart_items.delete()
-
-            messages.success(request, "Ваш заказ успешно оформлен! Номер заказа: #{}".format(order.id))
+            messages.success(request, f"Ваш заказ успешно оформлен! Номер заказа: #{order.id}")
             return redirect("order_detail", order_id=order.id)
     else:
-        # Заполняем форму данными из профиля пользователя
         initial_data = {
             "first_name": request.user.first_name,
             "last_name": request.user.last_name,
