@@ -81,6 +81,7 @@ class Printer(models.Model):
     price = models.DecimalField(verbose_name="Цена", default=0, max_digits=10, decimal_places=2)
     dimensions = models.CharField(verbose_name="Габариты", max_length=50, help_text="Формат: ШхГхВ (мм)")
     model = models.CharField(verbose_name="Модель", blank=True, max_length=100)
+    image_url = models.URLField(verbose_name="Изображение", blank=True, null=True)
 
     def __str__(self):
         """Строковое представление объекта Printer.
