@@ -1,10 +1,13 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from huggingface_hub import login
+from dotenv import load_dotenv
+
 import torch
 import os
 
-# Убедитесь, что токен действительный и имеет доступ к модели
-login(token="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")
+
+load_dotenv()
+login(token=os.getenv("API_KEY"))
 
 
 class PrinterAssistantBot:
