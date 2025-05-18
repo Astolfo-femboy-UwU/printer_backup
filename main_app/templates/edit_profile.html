@@ -1,19 +1,867 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Изменить профиль</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3DPrintPro - Изменить профиль</title>
+    <style>
+        /* Основные анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes borderPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 168, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 168, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 168, 255, 0); }
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px rgba(0, 168, 255, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(0, 168, 255, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(0, 168, 255, 0.5); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        /* Общие стили */
+        body {
+            background: linear-gradient(-45deg, #121212, #1a1a1a, #2a2a2a);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Стили для хедера */
+        header {
+            background-color: rgba(26, 26, 26, 0.9);
+            padding: 15px 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.7);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #00a8ff;
+            animation: fadeIn 1s ease-out, glow 3s infinite;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 22px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+            position: relative;
+        }
+
+        nav ul li a {
+            color: #bbbbbb;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: block;
+            padding: 8px 0;
+            position: relative;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00a8ff;
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #ffffff;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        /* Стили для основного контента */
+        .container {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid rgba(0, 168, 255, 0.2);
+            margin: 50px auto;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            border-color: rgba(0, 168, 255, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 0 0 2rem;
+            font-size: 2.2rem;
+            color: #00a8ff;
+            text-shadow: 0 0 15px rgba(0, 168, 255, 0.3);
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards 0.2s;
+        }
+
+        /* Стили для формы профиля */
+        .profile-form {
+            padding: 40px;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #bbbbbb;
+            font-size: 0.9rem;
+        }
+
+        /* Общие стили для всех полей ввода */
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            height: 30px;
+            border: 2px solid #2a2a2a;
+            border-radius: 8px;
+            background: #1e1e1e;
+            color: #fff;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Стандартные поля */
+        .form-group input:not([name="first_name"]):not([name="last_name"]),
+        .form-group select:not([name="expiry_month"]):not([name="expiry_year"]):not([name="card_type"]) {
+            padding: 12px 15px;
+            font-size: 1rem;
+            height: auto;
+        }
+
+        /* Уменьшенные поля */
+        .form-group input[name="first_name"],
+        .form-group input[name="last_name"] {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            height: 30px;
+        }
+
+        /* Поле адреса */
+        .form-group textarea[name="address"] {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            height: 60px;
+            resize: vertical;
+            min-height: 42px;
+            line-height: 1.4;
+        }
+
+        /* Фокус-стили для всех полей */
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #00a8ff;
+            box-shadow: 0 0 15px rgba(0, 168, 255, 0.2);
+            outline: none;
+        }
+
+        /* Стили для иконок в полях */
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            transition: color 0.3s;
+        }
+
+        .form-group input:focus ~ .input-icon,
+        .form-group textarea:focus ~ .input-icon,
+        .form-group select:focus ~ .input-icon {
+            color: #00a8ff;
+        }
+
+        /* Специальные стили для select */
+        .form-group select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23777' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+            padding-right: 35px;
+            cursor: pointer;
+        }
+
+        .form-group select:hover {
+            border-color: #444;
+        }
+
+        .form-group select:focus {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2300a8ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        }
+
+        /* Стили для кастомного выбора карты */
+        .card-type-select {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .card-option {
+            flex: 1 0 calc(33.333% - 10px);
+            min-width: 100px;
+            position: relative;
+        }
+
+        .card-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .card-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 5px;
+            background: #252525;
+            border: 2px solid #2a2a2a;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .card-option label:hover {
+            border-color: #444;
+        }
+
+        .card-option input[type="radio"]:checked + label {
+            border-color: #00a8ff;
+            background: rgba(0, 168, 255, 0.1);
+            box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.2);
+        }
+
+        .card-option .card-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #777;
+        }
+
+        .card-option input[type="radio"]:checked + label .card-icon {
+            color: #00a8ff;
+        }
+
+        .card-option .card-name {
+            font-size: 12px;
+            color: #bbb;
+        }
+
+        /* Стили для выбора даты (месяц/год) */
+        .expiry-date-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .expiry-date-group .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Стили для мультиселекта */
+        .form-group .multiselect {
+            position: relative;
+        }
+
+        .form-group .select-box {
+            border: 2px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 12px 15px;
+            background: #1e1e1e;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-group .select-box:hover {
+            border-color: #444;
+        }
+
+        .form-group .select-box:after {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23777' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            transition: transform 0.3s;
+        }
+
+        .form-group .select-box.open:after {
+            transform: rotate(180deg);
+        }
+
+        .form-group .checkboxes {
+            display: none;
+            border: 2px solid #2a2a2a;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            background: #1e1e1e;
+            max-height: 200px;
+            overflow-y: auto;
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group .checkboxes.open {
+            display: block;
+        }
+
+        .form-group .checkboxes label {
+            display: block;
+            padding: 10px 15px;
+            color: #bbb;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 0;
+        }
+
+        .form-group .checkboxes label:hover {
+            background: rgba(0, 168, 255, 0.1);
+            color: #fff;
+        }
+
+        .form-group .checkboxes input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(45deg, #00a8ff, #0066ff);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards 0.6s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 168, 255, 0.4);
+            background: linear-gradient(45deg, #00a8ff, #0088ff);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .form-links {
+            margin-top: 1.5rem;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards 0.8s;
+        }
+
+        .form-links a {
+            color: #00a8ff;
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s;
+            margin: 0 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .form-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #00a8ff;
+            transition: width 0.3s;
+        }
+
+        .form-links a:hover::after {
+            width: 100%;
+        }
+
+        .errorlist {
+            color: #ff6b6b;
+            list-style: none;
+            padding: 12px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .errorlist::before {
+            content: "⚠";
+            margin-right: 8px;
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        /* Стили для успешного сообщения */
+        .success-message {
+            background: rgba(0, 200, 83, 0.1);
+            color: #00c853;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 200, 83, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .success-message i {
+            font-size: 1.2rem;
+        }
+
+        /* Адаптивные стили */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            nav ul {
+                margin-top: 15px;
+                width: 100%;
+                justify-content: space-around;
+            }
+
+            nav ul li {
+                margin: 0;
+            }
+
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .profile-form {
+                padding: 20px;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .form-links {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .card-option {
+                flex: 1 0 calc(50% - 10px);
+            }
+
+            .expiry-date-group {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="profile">
-        <h2>Изменить профиль</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Сохранить</button>
-        </form>
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-print"></i>3DPrintPro
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Главная</a></li>
+                    <li><a href="/profile/"><i class="fas fa-user"></i> Профиль</a></li>
+                    <li><a href="/accounts/logout/"><i class="fas fa-sign-out-alt"></i> Выйти</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">Изменить профиль</h2>
+
+        <div class="profile-form">
+            <div id="successMessage" class="success-message" style="display: none;">
+                <i class="fas fa-check-circle"></i>
+                <span>Профиль успешно обновлен!</span>
+            </div>
+
+            <form method="post" id="profileForm">
+                {% csrf_token %}
+
+                <!-- Основные поля профиля -->
+                <div class="form-group" style="animation-delay: 0.1s">
+                    <label for="id_username">Имя пользователя</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="id_username" name="username" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group" style="animation-delay: 0.2s">
+                    <label for="id_email">Email</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="id_email" name="email"  required>
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group" style="animation-delay: 0.3s">
+                    <label for="id_first_name">Имя</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="id_first_name" name="first_name" >
+                        <i class="fas fa-signature input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group" style="animation-delay: 0.4s">
+                    <label for="id_last_name">Фамилия</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="id_last_name" name="last_name" >
+                        <i class="fas fa-signature input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group" style="animation-delay: 0.5s">
+                    <label for="id_phone">Телефон</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="id_phone" name="phone">
+                        <i class="fas fa-phone input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group" style="animation-delay: 0.6s">
+                    <label for="id_address">Адрес</label>
+                    <div class="input-wrapper">
+                        <textarea id="id_address" name="address"></textarea>
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Платежная информация -->
+                <div class="form-group" style="animation-delay: 0.7s">
+                    <label>Тип карты</label>
+                    <div class="card-type-select">
+                        <div class="card-option">
+                            <input type="radio" id="visa" name="card_type" value="visa" checked>
+                            <label for="visa">
+                                <i class="fab fa-cc-visa card-icon"></i>
+                                <span class="card-name">VISA</span>
+                            </label>
+                        </div>
+                        <div class="card-option">
+                            <input type="radio" id="mastercard" name="card_type" value="mastercard">
+                            <label for="mastercard">
+                                <i class="fab fa-cc-mastercard card-icon"></i>
+                                <span class="card-name">MasterCard</span>
+                            </label>
+                        </div>
+                        <div class="card-option">
+                            <input type="radio" id="mir" name="card_type" value="mir">
+                            <label for="mir">
+                                <i class="fas fa-credit-card card-icon"></i>
+                                <span class="card-name">МИР</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="animation-delay: 0.8s">
+                    <label for="id_card_number">Номер карты</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="id_card_number" name="card_number">
+                        <i class="fas fa-credit-card input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group" style="animation-delay: 0.9s">
+                    <label>Срок действия</label>
+                    <div class="expiry-date-group">
+                        <div class="form-group">
+                            <select name="expiry_month" id="expiry_month">
+                                <option value="" disabled>Месяц</option>
+                                <option value="01" selected>01 - Январь</option>
+                                <option value="02">02 - Февраль</option>
+                                <option value="03">03 - Март</option>
+                                <option value="04">04 - Апрель</option>
+                                <option value="05">05 - Май</option>
+                                <option value="06">06 - Июнь</option>
+                                <option value="07">07 - Июль</option>
+                                <option value="08">08 - Август</option>
+                                <option value="09">09 - Сентябрь</option>
+                                <option value="10">10 - Октябрь</option>
+                                <option value="11">11 - Ноябрь</option>
+                                <option value="12">12 - Декабрь</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <select name="expiry_year" id="expiry_year">
+                                <option value="" disabled>Год</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025" selected>2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2028">2029</option>
+                                <option value="2028">2030</option>
+                                <option value="2028">2031</option>
+                                <option value="2028">2032</option>
+                                <option value="2028">2033</option>
+                                <option value="2028">2034</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="animation-delay: 1.0s">
+                    <label for="id_cvv">CVV/CVC</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="id_cvv" name="cvv">
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                </div>
+
+
+
+
+                <div class="form-group" style="animation-delay: 1.2s">
+                    <label for="id_notifications">Уведомления</label>
+                    <div class="input-wrapper">
+                        <select id="id_notifications" name="notifications">
+                            <option value="all">Все уведомления</option>
+                            <option value="important" selected>Только важные</option>
+                            <option value="none">Не получать</option>
+                        </select>
+                        <i class="fas fa-bell input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i> Сохранить изменения
+                    </button>
+                </div>
+            </form>
+
+            <div class="form-links">
+                <a href="/profile/">
+                    <i class="fas fa-user"></i> Просмотр профиля
+                </a>
+                <a href="/">
+                    <i class="fas fa-home"></i> На главную
+                </a>
+            </div>
+        </div>
     </div>
-<p><a href="/profile/">Просмотр профиля</a></p>
-<p><a href="/">На главную страницу</a></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация мультиселекта
+            function toggleCheckboxes() {
+                const checkboxes = document.getElementById('services-checkboxes');
+                const selectBox = document.querySelector('.select-box');
+
+                checkboxes.classList.toggle('open');
+                selectBox.classList.toggle('open');
+
+                updateSelectedText();
+            }
+
+            function updateSelectedText() {
+                const checkboxes = document.querySelectorAll('#services-checkboxes input[type="checkbox"]');
+                const selectedText = document.querySelector('.selected-text');
+                const selected = [];
+
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selected.push(checkbox.nextSibling.textContent.trim());
+                    }
+                });
+
+                selectedText.textContent = selected.length > 0
+                    ? selected.join(', ')
+                    : 'Выберите услуги';
+            }
+
+            // Закрытие мультиселекта при клике вне его
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.multiselect')) {
+                    const checkboxes = document.querySelector('.checkboxes');
+                    const selectBox = document.querySelector('.select-box');
+                    if (checkboxes) checkboxes.classList.remove('open');
+                    if (selectBox) selectBox.classList.remove('open');
+                }
+            });
+
+            // Обновление текста при выборе чекбоксов
+            document.querySelectorAll('#services-checkboxes input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectedText);
+            });
+
+            // Имитация успешного сохранения (для демонстрации)
+            const form = document.getElementById('profileForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сохранение...';
+                    submitBtn.disabled = true;
+
+                    // Имитация AJAX-запроса
+                    setTimeout(() => {
+                        const successMessage = document.getElementById('successMessage');
+                        successMessage.style.display = 'flex';
+                        successMessage.style.opacity = '0';
+                        setTimeout(() => {
+                            successMessage.style.opacity = '1';
+                        }, 10);
+
+                        submitBtn.innerHTML = '<i class="fas fa-save"></i> Сохранить изменения';
+                        submitBtn.disabled = false;
+                    }, 1500);
+                });
+            }
+
+            // Автоматическое форматирование номера телефона
+            const phoneInput = document.getElementById('id_phone');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function(e) {
+                    let value = this.value.replace(/\D/g, '');
+                    let formattedValue = '';
+
+                    if (value.length > 0) {
+                        formattedValue = '+7 (';
+                        if (value.length > 1) {
+                            formattedValue += value.substring(1, 4);
+                        }
+                        if (value.length > 4) {
+                            formattedValue += ') ' + value.substring(4, 7);
+                        }
+                        if (value.length > 7) {
+                            formattedValue += '-' + value.substring(7, 9);
+                        }
+                        if (value.length > 9) {
+                            formattedValue += '-' + value.substring(9, 11);
+                        }
+                    }
+
+                    this.value = formattedValue;
+                });
+            }
+
+            // Автоматическое форматирование номера карты
+            const cardInput = document.getElementById('id_card_number');
+            if (cardInput) {
+                cardInput.addEventListener('input', function(e) {
+                    let value = this.value.replace(/\D/g, '');
+                    let formattedValue = '';
+
+                    for (let i = 0; i < value.length; i++) {
+                        if (i > 0 && i % 4 === 0) {
+                            formattedValue += ' ';
+                        }
+                        formattedValue += value[i];
+                    }
+
+                    this.value = formattedValue.substring(0, 19);
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -651,8 +651,12 @@
                     <li><a href="#contact">Контакты</a></li>
                 </ul>
                 <ul class="auth-nav">
-                    <li><a href="/accounts/login/">Войти</a></li>
-                    <li><a href="/accounts/registration/">Регистрация</a></li>
+                    {% if user_authenticated %}
+                    <li><a href="/profile/"><i class="fas fa-user"></i> Профиль</a></li>
+                    {% else %}
+                        <li><a href="/accounts/login/">Войти</a></li>
+                        <li><a href="/accounts/registration/">Регистрация</a></li>
+                    {% endif %}
                 </ul>
             </nav>
         </div>

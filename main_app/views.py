@@ -30,7 +30,9 @@ def welcome_page(request):
             - printers (QuerySet): Список принтеров, отсортированный по цене
     """
     printers = Printer.objects.all().order_by("price")
-    context = {"printers": printers}
+    user_authenticated = request.user.is_authenticated
+    context = {"printers": printers,
+               "user_authenticated": user_authenticated}
     return render(request, "welcome_page.html", context)
 
 
