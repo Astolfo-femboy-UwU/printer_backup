@@ -106,6 +106,8 @@ class CustomPrinter(models.Model):
         """
         app_label = "main_app"
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 class Cart(models.Model):
     """Модель корзины покупок пользователя.

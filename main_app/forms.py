@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.utils import timezone
-from .models import Profile, Order
+from .models import Profile, Order, Printer
 
 
 class RegistrationForm(forms.ModelForm):
@@ -198,6 +198,31 @@ class ProfileEditForm(forms.ModelForm):
         required=False,
         empty_value=None
     )
+
+
+class PrinterForm(forms.ModelForm):
+    """Форма для добавления/редактирования принтеров администратором."""
+
+    class Meta:
+        model = Printer
+        fields = ['model', 'article', 'description', 'price',
+                  'dimensions', 'image_url']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'price': forms.NumberInput(attrs={'step': '0.01'}),
+        }
+
+    def clean_article(self):
+        article = self.cleaned_data.get('article')
+        if Printer.objects.filter(article=article).exists() and not self.instance.pk:
+            raise forms.ValidationError("Принтер с таким артикулом уже существует")
+        return article
+
+    def clean_price(self):
+        price = self.cleaned_data.get('price')
+        if price <= 0:
+            raise forms.ValidationError("Цена должна быть положительной")
+        return price
 
 
 class CheckoutForm(forms.Form):
