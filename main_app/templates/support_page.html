@@ -1,10 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Нифига (поддержка)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поддержка | 3DPrintPro</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <header class="header">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-print"></i>3DPrintPro
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="/"><i class="fas fa-home"></i> Главная</a></li>
+                    <li class="nav-item"><a href="/printers/"><i class="fas fa-print"></i> Каталог</a></li>
+                    <li class="nav-item"><a href="/cart/"><i class="fas fa-shopping-cart"></i> Корзина</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <div class="container mt-4">
+        <h1 class="section-title">Техническая поддержка</h1>
+
+        <div class="features-grid">
+            <div class="feature-card card">
+                <div class="feature-icon">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <h3 class="feature-title">Телефонная поддержка</h3>
+                <p class="feature-description">Звоните нам по номеру +7 (495) 123-45-67 с 9:00 до 21:00 ежедневно</p>
+            </div>
+
+            <div class="feature-card card">
+                <div class="feature-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3 class="feature-title">Электронная почта</h3>
+                <p class="feature-description">Пишите на support@3dprintpro.ru. Ответим в течение 24 часов</p>
+            </div>
+
+            <div class="feature-card card">
+                <div class="feature-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="feature-title">Онлайн-чат</h3>
+                <p class="feature-description">Чат с поддержкой доступен на сайте с 10:00 до 20:00</p>
+            </div>
+
+            <div class="feature-card card">
+                <div class="feature-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3 class="feature-title">Техническая документация</h3>
+                <p class="feature-description">Инструкции и руководства по эксплуатации оборудования</p>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h3>Часто задаваемые вопросы</h3>
+                <div class="mt-3">
+                    <h5>Как установить принтер?</h5>
+                    <p>Предоставляем подробные инструкции по установке и видео-туториалы на YouTube канале.</p>
+
+                    <h5>Какая гарантия на оборудование?</h5>
+                    <p>Все принтеры имеют гарантию 2 года, апгрейды - 1 год.</p>
+
+                    <h5>Как заказать доставку?</h5>
+                    <p>Доставка осуществляется по всей России. Стоимость и сроки рассчитываются при оформлении заказа.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

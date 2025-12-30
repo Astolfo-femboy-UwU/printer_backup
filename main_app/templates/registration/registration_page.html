@@ -1,187 +1,20 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация | 3DPrintPro</title>
-    <style>
-        /* Основные анимации */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Общие стили */
-        body {
-            background: linear-gradient(-45deg, #121212, #1a1a1a, #2a2a2a);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            color: #ffffff;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background: rgba(30, 30, 30, 0.95);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 420px;
-            border: 1px solid rgba(0, 168, 255, 0.2);
-            transform: translateY(10px);
-            opacity: 0;
-            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            margin: 1rem;
-        }
-
-        h1 {
-            text-align: center;
-            margin: 0 0 1.5rem;
-            font-size: 1.8rem;
-            color: #00a8ff;
-            opacity: 0;
-            animation: fadeIn 0.4s ease-out forwards 0.2s;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-            opacity: 0;
-            transform: translateY(8px);
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-
-        .form-group:nth-child(1) { animation-delay: 0.2s; }
-        .form-group:nth-child(2) { animation-delay: 0.3s; }
-        .form-group:nth-child(3) { animation-delay: 0.4s; }
-        .form-group:nth-child(4) { animation-delay: 0.5s; }
-        .form-group:nth-child(5) { animation-delay: 0.6s; }
-        .form-group:nth-child(6) { animation-delay: 0.7s; }
-
-        label {
-            display: block;
-            margin-bottom: 0.4rem;
-            color: #bbbbbb;
-            font-size: 0.85rem;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #2a2a2a;
-            border-radius: 6px;
-            background: #1e1e1e;
-            color: #fff;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-        }
-
-        input:focus {
-            border-color: #00a8ff;
-            box-shadow: 0 0 10px rgba(0, 168, 255, 0.2);
-            outline: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(45deg, #00a8ff, #0066ff);
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            opacity: 0;
-            animation: fadeIn 0.4s ease-out forwards 0.8s;
-            margin-top: 0.5rem;
-        }
-
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 3px 15px rgba(0, 168, 255, 0.3);
-        }
-
-        .links {
-            margin-top: 1.2rem;
-            text-align: center;
-            opacity: 0;
-            animation: fadeIn 0.4s ease-out forwards 1s;
-            font-size: 0.9rem;
-        }
-
-        a {
-            color: #00a8ff;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .error-message {
-            color: #ff6b6b;
-            padding: 8px 10px;
-            background: rgba(255, 107, 107, 0.1);
-            border-radius: 6px;
-            margin: 0.3rem 0;
-            border: 1px solid rgba(255, 107, 107, 0.3);
-            font-size: 0.8rem;
-            opacity: 0;
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-
-        .password-hint {
-            font-size: 0.75rem;
-            color: #777;
-            margin-top: 3px;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 1.2rem;
-            }
-
-            h1 {
-                font-size: 1.6rem;
-                margin-bottom: 1.2rem;
-            }
-
-            input[type="text"],
-            input[type="email"],
-            input[type="password"] {
-                padding: 8px 10px;
-                font-size: 0.9rem;
-            }
-
-            button {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
-    <div class="container">
-        <h1><i class="fas fa-user-plus"></i> Регистрация</h1>
+<body class="auth-bg">
+    <div class="auth-container">
+        <h1 class="auth-title"><i class="fas fa-user-plus"></i> Регистрация</h1>
 
-        <form method="POST" action="">
+        <form method="POST" action="" class="auth-form">
             {% csrf_token %}
 
             <div class="form-group">
@@ -234,17 +67,19 @@
             </div>
 
             {% if reg_form.non_field_errors %}
-                <div class="error-message">
+                <div class="alert alert-danger">
                     {% for error in reg_form.non_field_errors %}
                         {{ error }}
                     {% endfor %}
                 </div>
             {% endif %}
 
-            <button type="submit"><i class="fas fa-user-plus"></i> Зарегистрироваться</button>
+            <button type="submit" class="btn btn-primary mt-3">
+                <i class="fas fa-user-plus"></i> Зарегистрироваться
+            </button>
         </form>
 
-        <div class="links">
+        <div class="auth-links">
             <p>Уже есть аккаунт? <a href="/accounts/login/"><i class="fas fa-sign-in-alt"></i> Войти</a></p>
         </div>
     </div>

@@ -1,178 +1,20 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход в 3DPrintPro</title>
-    <style>
-        /* Основные анимации */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Общие стили */
-        body {
-            background: linear-gradient(-45deg, #121212, #1a1a1a, #2a2a2a);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            color: #ffffff;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background: rgba(30, 30, 30, 0.95);
-            padding: 2.5rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid rgba(0, 168, 255, 0.2);
-            transform: translateY(20px);
-            opacity: 0;
-            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        h1 {
-            text-align: center;
-            margin: 0 0 2rem;
-            font-size: 2.2rem;
-            color: #00a8ff;
-            text-shadow: 0 0 15px rgba(0, 168, 255, 0.3);
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out forwards 0.2s;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        .form-group:nth-child(1) { animation-delay: 0.3s; }
-        .form-group:nth-child(2) { animation-delay: 0.4s; }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #bbbbbb;
-            font-size: 0.9rem;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #2a2a2a;
-            border-radius: 8px;
-            background: #1e1e1e;
-            color: #fff;
-            font-size: 1rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        input:focus {
-            border-color: #00a8ff;
-            box-shadow: 0 0 15px rgba(0, 168, 255, 0.2);
-            outline: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(45deg, #00a8ff, #0066ff);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out forwards 0.6s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 168, 255, 0.4);
-        }
-
-        .links {
-            margin-top: 1.5rem;
-            text-align: center;
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out forwards 0.8s;
-        }
-
-        a {
-            color: #00a8ff;
-            text-decoration: none;
-            position: relative;
-            transition: color 0.3s;
-        }
-
-        a::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: #00a8ff;
-            transition: width 0.3s;
-        }
-
-        a:hover::after {
-            width: 100%;
-        }
-
-        .error-message {
-            color: #ff6b6b;
-            padding: 12px;
-            background: rgba(255, 107, 107, 0.1);
-            border-radius: 8px;
-            margin: 1rem 0;
-            border: 1px solid rgba(255, 107, 107, 0.3);
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        .error-message::before {
-            content: "⚠";
-            margin-right: 8px;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 1.5rem;
-                margin: 1rem;
-            }
-
-            h1 {
-                font-size: 1.8rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
-    <div class="container">
-        <h1><i class="fas fa-sign-in-alt"></i> Вход</h1>
+<body class="auth-bg">
+    <div class="auth-container">
+        <h1 class="auth-title"><i class="fas fa-sign-in-alt"></i> Вход</h1>
 
-        <form method="POST">
+        <form method="POST" class="auth-form">
             {% csrf_token %}
 
             <div class="form-group">
@@ -186,17 +28,17 @@
             </div>
 
             {% if form.non_field_errors %}
-                <div class="error-message">
+                <div class="alert alert-danger">
                     {% for error in form.non_field_errors %}
                         {{ error }}
                     {% endfor %}
                 </div>
             {% endif %}
 
-            <button type="submit">Войти в систему</button>
+            <button type="submit" class="btn btn-primary mt-3">Войти в систему</button>
         </form>
 
-        <div class="links">
+        <div class="auth-links">
             <p>Нет аккаунта? <a href="/accounts/registration/">Создать аккаунт</a></p>
             <p><a href="/accounts/password_reset/"><i class="fas fa-key"></i> Восстановить пароль</a></p>
         </div>

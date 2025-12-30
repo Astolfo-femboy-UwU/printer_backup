@@ -1,10 +1,68 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title> Главная </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог принтеров | 3DPrintPro</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <header class="header">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-print"></i>3DPrintPro
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="/"><i class="fas fa-home"></i> Главная</a></li>
+                    <li class="nav-item"><a href="/cart/"><i class="fas fa-shopping-cart"></i> Корзина</a></li>
+                    <li class="nav-item"><a href="/profile/"><i class="fas fa-user"></i> Профиль</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <div class="container mt-4">
+        <h1 class="section-title">Каталог принтеров</h1>
+
+        <div class="products-grid">
+            {% for printer in printers %}
+            <div class="product-card card">
+                <div class="product-image">
+                    {% if printer.image_url %}
+                        <img src="{{ printer.image_url }}" alt="{{ printer.model }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/280x200?text=No+Image" alt="No image">
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">{{ printer.model }}</h3>
+                    <p class="product-article">{{ printer.article }}</p>
+                    <p class="product-description">{{ printer.description|truncatechars:100 }}</p>
+                    <div class="product-price">{{ printer.price }} ₽</div>
+                    <a href="{% url 'printer_detail' printer.id %}" class="btn btn-primary">Подробнее</a>
+                    <form method="post" action="{% url 'printer_detail' printer.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="add_to_cart" value="1">
+                        <button type="submit" class="btn btn-secondary mt-2">
+                            <i class="fas fa-cart-plus"></i> В корзину
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-cart">
+                <i class="fas fa-print"></i>
+                <h2>Принтеры не найдены</h2>
+                <p>В данный момент в каталоге нет принтеров</p>
+                <a href="/" class="btn btn-primary">На главную</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>

@@ -1,81 +1,32 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ printer.model }} | 3DPrintPro</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .printer-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .printer-content {
-            display: flex;
-            gap: 40px;
-        }
-        .printer-image {
-            flex: 1;
-            max-width: 500px;
-        }
-        .printer-image img {
-            width: 100%;
-            border-radius: 8px;
-        }
-        .printer-info {
-            flex: 1;
-        }
-        .price {
-            font-size: 24px;
-            color: #00a8ff;
-            margin: 20px 0;
-        }
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #00a8ff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .btn:hover {
-            background-color: #0088cc;
-            transform: translateY(-2px);
-        }
-        .btn i {
-            margin-right: 8px;
-        }
-        .messages {
-            margin: 20px 0;
-        }
-        .alert {
-            padding: 10px 15px;
-            border-radius: 4px;
-        }
-        .alert-success {
-            background-color: #4CAF50;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
+    <header class="header">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-print"></i>3DPrintPro
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="/"><i class="fas fa-home"></i> Главная</a></li>
+                    <li class="nav-item"><a href="/printers/"><i class="fas fa-print"></i> Все принтеры</a></li>
+                    <li class="nav-item"><a href="/cart/"><i class="fas fa-shopping-cart"></i> Корзина</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mt-4">
         {% if messages %}
         <div class="messages">
             {% for message in messages %}
@@ -88,23 +39,24 @@
 
         <div class="printer-header">
             <h1>{{ printer.model }}</h1>
-            <div class="price">{{ printer.price }} ₽</div>
+            <div class="printer-price">{{ printer.price }} ₽</div>
         </div>
 
         <div class="printer-content">
             <div class="printer-image">
-                {% if printer.image %}
-                    <img src="{{ printer.image.url }}" alt="{{ printer.model }}">
+                {% if printer.image_url %}
+                    <img src="{{ printer.image_url }}" alt="{{ printer.model }}" class="img-fluid">
                 {% else %}
-                    <img src="https://via.placeholder.com/500x300?text=No+Image" alt="No image">
+                    <img src="https://via.placeholder.com/500x300?text=No+Image" alt="No image" class="img-fluid">
                 {% endif %}
             </div>
 
             <div class="printer-info">
                 <h3>Характеристики:</h3>
-                <ul>
+                <ul class="list-unstyled">
                     <li><strong>Артикул:</strong> {{ printer.article }}</li>
                     <li><strong>Габариты:</strong> {{ printer.dimensions }}</li>
+                    <li><strong>Модель:</strong> {{ printer.model }}</li>
                 </ul>
 
                 <h3>Описание:</h3>
@@ -112,11 +64,17 @@
 
                 <form method="post" action="{% url 'printer_detail' printer.id %}">
                     {% csrf_token %}
-                    <button type="submit" name="add_to_cart" class="btn">
+                    <button type="submit" name="add_to_cart" class="btn btn-primary">
                         <i class="fas fa-shopping-cart"></i> Добавить в корзину
                     </button>
                 </form>
-                <button class="btn"><a href="/shopcart/">Перейти в корзину</a></button>
+
+                <a href="/cart/" class="btn btn-secondary mt-2">
+                    <i class="fas fa-shopping-cart"></i> Перейти в корзину
+                </a>
+                <a href="/printers/" class="btn btn-outline-secondary mt-2">
+                    <i class="fas fa-arrow-left"></i> Вернуться к каталогу
+                </a>
             </div>
         </div>
     </div>

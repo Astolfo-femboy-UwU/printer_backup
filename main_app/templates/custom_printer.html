@@ -1,10 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кастомные принтеры | 3DPrintPro</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <header class="header">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-print"></i>3DPrintPro
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="/"><i class="fas fa-home"></i> Главная</a></li>
+                    <li class="nav-item"><a href="/printers/"><i class="fas fa-print"></i> Стандартные принтеры</a></li>
+                    <li class="nav-item"><a href="/cart/"><i class="fas fa-shopping-cart"></i> Корзина</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <div class="container mt-4">
+        <h1 class="section-title">Кастомные принтеры</h1>
+
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            Раздел находится в разработке. В ближайшее время здесь появится возможность собрать свой индивидуальный 3D принтер.
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h3>Что такое кастомный принтер?</h3>
+                <p>Кастомный (настраиваемый) 3D принтер - это устройство, собранное под ваши конкретные задачи. Вы выбираете:</p>
+                <ul>
+                    <li>Размер рабочей области</li>
+                    <li>Тип экструдера</li>
+                    <li>Материалы для печати</li>
+                    <li>Дополнительные модули и апгрейды</li>
+                    <li>Цвет и дизайн корпуса</li>
+                </ul>
+                <p>Наши инженеры помогут собрать оптимальную конфигурацию для ваших нужд.</p>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/printers/" class="btn btn-primary">
+                <i class="fas fa-print"></i> Посмотреть стандартные принтеры
+            </a>
+            <a href="/" class="btn btn-secondary">
+                <i class="fas fa-home"></i> На главную
+            </a>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,243 +1,31 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Корзина покупок | 3DPrintPro</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .section-title {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 32px;
-            color: #ffffff;
-            position: relative;
-        }
-        .section-title:after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 3px;
-            background: #00a8ff;
-            margin: 15px auto;
-        }
-        .cart-wrapper {
-            margin-top: 30px;
-            animation: fadeIn 0.5s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .cart-header {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 0.5fr;
-            gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid #2a2a2a;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .cart-item {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 0.5fr;
-            gap: 15px;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid #2a2a2a;
-            transition: all 0.3s ease;
-        }
-        .cart-item:hover {
-            background-color: rgba(0, 168, 255, 0.05);
-        }
-        .product-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .product-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: #2a2a2a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .product-image img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        .product-title {
-            margin: 0;
-            font-size: 18px;
-            color: #ffffff;
-        }
-        .product-article {
-            color: #777777;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .qty-btn {
-            background: #00a8ff;
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .qty-btn:hover {
-            background: #0088cc;
-            transform: scale(1.1);
-        }
-        .qty-input {
-            width: 50px;
-            text-align: center;
-            background: #2a2a2a;
-            border: 1px solid #3a3a3a;
-            color: white;
-            padding: 5px;
-            border-radius: 4px;
-        }
-        .price {
-            text-align: center;
-        }
-        .total-price {
-            color: #00a8ff;
-            font-weight: bold;
-            text-align: center;
-        }
-        .remove-btn {
-            background: none;
-            border: none;
-            color: #ff4444;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 0;
-        }
-        .remove-btn:hover {
-            color: #cc0000;
-            transform: scale(1.1);
-        }
-        .cart-summary {
-            margin-top: 40px;
-            padding: 30px;
-            background: #1a1a1a;
-            border-radius: 8px;
-            max-width: 400px;
-            margin-left: auto;
-            text-align: right;
-        }
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-        .grand-total {
-            font-size: 24px;
-            color: #00a8ff;
-            font-weight: bold;
-        }
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: #00a8ff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
-        }
-        .btn:hover {
-            background-color: #0088cc;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        .continue-btn {
-            display: inline-block;
-            margin-top: 15px;
-            color: #00a8ff;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        .continue-btn:hover {
-            text-decoration: underline;
-        }
-        .empty-cart {
-            text-align: center;
-            padding: 60px 0;
-        }
-        .empty-cart i {
-            font-size: 80px;
-            color: #2a2a2a;
-            margin-bottom: 20px;
-        }
-        .empty-cart h2 {
-            margin: 20px 0 10px;
-            font-size: 24px;
-        }
-        .empty-cart p {
-            color: #777777;
-            margin-bottom: 30px;
-        }
-        @media (max-width: 768px) {
-            .cart-header {
-                display: none;
-            }
-            .cart-item {
-                grid-template-columns: 1fr;
-                gap: 15px;
-                padding: 25px 0;
-                position: relative;
-            }
-            .product-info {
-                margin-bottom: 15px;
-            }
-            .price, .quantity-control, .total-price {
-                text-align: left;
-            }
-            .remove-btn {
-                position: absolute;
-                top: 25px;
-                right: 0;
-            }
-            .cart-summary {
-                max-width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
 <body>
+    <header class="header">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-print"></i>3DPrintPro
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="/"><i class="fas fa-home"></i> Главная</a></li>
+                    <li class="nav-item"><a href="/printers/"><i class="fas fa-print"></i> Каталог</a></li>
+                    <li class="nav-item"><a href="/profile/"><i class="fas fa-user"></i> Профиль</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
     <div class="container">
         <h1 class="section-title">Ваша корзина</h1>
 
@@ -255,8 +43,8 @@
             <div class="cart-item">
                 <div class="product-info">
                     <div class="product-image">
-                        {% if item.printer.image %}
-                            <img src="{{ item.printer.image.url }}" alt="{{ item.printer.model }}">
+                        {% if item.printer.image_url %}
+                            <img src="{{ item.printer.image_url }}" alt="{{ item.printer.model }}">
                         {% else %}
                             <img src="https://via.placeholder.com/100x100?text=No+Image" alt="No image">
                         {% endif %}
@@ -270,7 +58,7 @@
                 <div class="price">{{ item.printer.price }} ₽</div>
 
                 <div class="quantity-control">
-                    <form method="post" action="{% url 'update_cart_item' item.id %}">
+                    <form method="post" action="{% url 'update_cart_item' item.id %}" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" name="action" value="decrease" class="qty-btn">−</button>
                         <span class="qty-input">{{ item.quantity }}</span>
@@ -300,7 +88,7 @@
                     <span>Общая сумма:</span>
                     <span class="grand-total">{{ total_price }} ₽</span>
                 </div>
-                <a href="{% url 'checkout' %}" class="btn">Оформить заказ</a>
+                <a href="{% url 'checkout' %}" class="btn btn-primary">Оформить заказ</a>
                 <a href="/" class="continue-btn">Продолжить покупки</a>
             </div>
         </div>
@@ -309,7 +97,7 @@
             <i class="fas fa-shopping-cart"></i>
             <h2>Ваша корзина пуста</h2>
             <p>Добавьте товары из каталога</p>
-            <a href="/" class="btn">Вернуться в магазин</a>
+            <a href="/" class="btn btn-primary">Вернуться в магазин</a>
         </div>
         {% endif %}
     </div>
